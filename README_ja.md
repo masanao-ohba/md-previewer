@@ -10,6 +10,22 @@ Mermaid & PlantUMLダイアグラムの高度なサポートを備えた、強�
 - **サイドバイサイド表示**: エディタと並べてプレビューを開く
 - **シンタックスハイライト**: コードブロックの美しい表示
 
+#### サポートしているコード言語
+- JavaScript（`javascript`, `js`）
+- HTML（`html`, `htm`）
+- CSS（`css`）
+- PHP（`php`）
+- Python（`python`, `py`）
+- Ruby（`ruby`, `rb`）
+- Java（`java`）
+- YAML（`yaml`, `yml`）
+- JSON（`json`）
+- JSON Lines（`jsonl`）
+- Diff（`diff`, `patch`）
+- Bash（`bash`, `sh`, `shell`）
+- SCSS（`scss`, `sass`）
+- SQL（`sql`）
+
 ### 📊 ダイアグラムサポート
 
 #### Mermaid
