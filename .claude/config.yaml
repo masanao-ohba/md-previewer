@@ -1,0 +1,665 @@
+# Claude Code Configuration for Markdown Preview Enhanced Extension
+
+# Project metadata
+project:
+  name: "Markdown Preview Enhanced"
+  type: "vscode-extension"
+  language: "typescript"
+  framework: "vscode-extension-api"
+
+# Output preferences
+output:
+  language: "english"  # Documentation in English for better AI comprehension
+
+# Development phases
+phases:
+  - name: "foundation"
+    description: "Core extension structure and basic preview"
+    deliverables:
+      - "Extension manifest (package.json)"
+      - "Basic preview command"
+      - "Markdown to HTML conversion"
+
+  - name: "diagram-support"
+    description: "Mermaid and PlantUML integration"
+    deliverables:
+      - "Mermaid renderer"
+      - "PlantUML renderer (online mode)"
+      - "Error isolation mechanism"
+
+  - name: "advanced-features"
+    description: "Zoom, themes, and local PlantUML"
+    deliverables:
+      - "Zoom/pan controls"
+      - "Theme system (5+ themes)"
+      - "PlantUML local mode"
+
+  - name: "testing-polish"
+    description: "Testing and optimization"
+    deliverables:
+      - "Unit tests (>70% coverage)"
+      - "Integration tests"
+      - "Performance optimization"
+      - "Documentation"
+
+# Testing configuration
+testing:
+  framework: "jest"
+  unit_test_pattern: "**/*.test.ts"
+  integration_test_pattern: "**/*.spec.ts"
+  coverage_threshold: 70
+  test_command: "npm test"
+
+  # NEW: Mandatory test design review
+  test_quality_enforcement:
+    enabled: true
+    review_agent: "quality-reviewer"
+    review_trigger: "After test file creation or modification"
+    review_criteria_file: ".work/test-quality-criteria.yaml"
+
+  # NEW: Test design principles (code-developer MUST read before writing tests)
+  test_design_principles:
+    - principle: "Test behavior, not implementation"
+      explanation: "Tests should verify what the code does (outcomes), not how it does it (internal structure)"
+      anti_pattern: "expect(html).toContain('mermaid-container') // Just checking HTML structure exists"
+      correct_pattern: "expect(extractDiagramType(html)).toBe('mermaid') // Verifying business logic"
+      detection_rule: "Tests checking string existence in output without asserting business logic"
+
+    - principle: "Test business logic, not library behavior"
+      explanation: "Focus on YOUR code's decisions and transformations, not third-party library behavior"
+      anti_pattern: "expect(html).toContain('<h1>Heading</h1>') // Testing markdown-it's output"
+      correct_pattern: "expect(processor.extractHeadings(markdown)).toEqual([{level:1, text:'Heading'}]) // Testing YOUR extraction logic"
+      detection_rule: "Tests verifying third-party library output format without testing your abstraction"
+
+    - principle: "Test edge cases and error paths"
+      explanation: "Don't just test happy path - verify error handling, boundary conditions, and failure modes"
+      required_scenarios:
+        - "Empty/null/undefined inputs"
+        - "Malformed data"
+        - "Boundary values (max/min)"
+        - "Concurrent operations (if applicable)"
+      detection_rule: "Test suite missing error case coverage"
+
+    - principle: "Tests should fail when requirements change"
+      explanation: "A test that passes after breaking a requirement is useless for regression detection"
+      verification_question: "If you remove XSS escaping, does the test fail?"
+      detection_rule: "Test passes when requirement-critical code is removed"
+
+  # NEW: Test documentation requirements
+  test_documentation:
+    format: "Without this test, we would not be guaranteed that..."
+    must_specify:
+      - "Specific requirement being verified (not just 'function exists')"
+      - "What would break if this test didn't exist (concrete failure scenario)"
+      - "NOT acceptable: 'HTML contains string' without business logic assertion"
+
+# Build configuration
+build:
+  command: "npm run compile"
+  package_command: "vsce package"
+  output_dir: "./out"
+
+# Quality checks
+quality:
+  linting:
+    tool: "eslint"
+    config: ".eslintrc.json"
+    command: "npm run lint"
+
+  formatting:
+    tool: "prettier"
+    config: ".prettierrc"
+    command: "npm run format"
+
+# Performance benchmarks
+performance:
+  render_time_target_ms: 100  # For typical markdown file
+  debounce_delay_ms: 300
+  max_file_size_lines: 10000
+
+# Dependencies
+dependencies:
+  runtime:
+    - name: "markdown-it"
+      version: "^14.0.0"
+      purpose: "Markdown parsing"
+    - name: "mermaid"
+      version: "^10.0.0"
+      purpose: "Mermaid diagram rendering"
+    - name: "vscode-webview-ui-toolkit"
+      version: "^1.0.0"
+      purpose: "Webview UI components"
+
+  development:
+    - name: "@types/vscode"
+      version: "^1.85.0"
+      purpose: "VSCode API types"
+    - name: "@vscode/test-electron"
+      version: "^2.0.0"
+      purpose: "Extension testing"
+    - name: "jest"
+      version: "^29.0.0"
+      purpose: "Unit testing"
+    - name: "typescript"
+      version: "^5.0.0"
+      purpose: "TypeScript compilation"
+
+# Agent skills configuration
+agent_skills:
+  workflow-orchestrator:
+    - generic/workflow-patterns
+    - generic/git-commit-manager
+    - typescript/vscode-extension-patterns
+    - process/requirement-enforcement  # NEW: Enforce requirement analysis before implementation
+    - process/design-review-enforcement  # NEW: Enforce design review before implementation
+
+  requirement-analyst:  # NEW: Mandatory for all features
+    - generic/requirement-analysis
+    - generic/user-story-creation
+    - generic/acceptance-criteria-definition
+    - generic/scope-clarification
+    mandatory: true
+    invocation_trigger: "Before implementation begins"
+    deliverables:
+      - ".work/requirements.yaml"
+      - ".work/user-stories.yaml"
+      - ".work/acceptance-criteria.yaml"
+
+  design-architect:  # NEW: Mandatory for all features
+    - generic/architecture-design
+    - generic/component-interface-specification
+    - generic/integration-point-documentation
+    - typescript/component-design
+    mandatory: true
+    invocation_trigger: "After requirement analysis, before implementation"
+    deliverables:
+      - ".work/architecture.md"
+      - ".work/interfaces.yaml"
+      - ".work/test-scenarios.yaml"
+
+  code-developer:
+    - generic/code-implementer
+    - typescript/implementation-patterns
+    - typescript/jest-test-patterns
+    - webview/html-css-js-patterns
+    - integration/component-integration  # NEW: Must verify integration points
+    - testing/integration-test-creation  # NEW: Must create integration tests
+    - testing/test-design-principles  # NEW: Must read test_design_principles before writing tests
+    mandatory_reads_before_test_implementation:
+      - ".claude/config.yaml#testing.test_design_principles"
+      - ".work/test-quality-criteria.yaml"
+
+  test-strategist:
+    - generic/test-planning
+    - typescript/jest-patterns
+    - vscode/extension-test-patterns
+    - testing/integration-test-planning  # NEW: Must plan integration tests
+    - testing/e2e-test-planning  # NEW: Must plan end-to-end tests
+
+  quality-reviewer:
+    - generic/code-reviewer
+    - typescript/code-quality
+    - vscode/best-practices
+    - integration/integration-point-review  # NEW: Must verify integration points
+
+  deliverable-evaluator:
+    - generic/deliverable-verification
+    - vscode/extension-validation
+    - evaluation/evidence-based-verification  # NEW: Must require evidence
+    - evaluation/acceptance-criteria-verification  # NEW: Must verify each criterion
+    - evaluation/strategy-alignment-verification  # NEW: Must verify strategy compliance
+    - evaluation/independent-review  # NEW: Different agent from implementer
+    mandatory: true
+    invocation_trigger: "After implementation completes"
+    independent_from: ["code-developer", "design-architect", "requirement-analyst"]
+    deliverables:
+      - ".work/evaluation-report.md"
+      - ".work/evidence/"
+      - ".work/strategy-compliance-checklist.yaml"
+
+  process-compliance-monitor:  # NEW: Automatic violation detection and feedback
+    - generic/process-auditing
+    - generic/violation-detection
+    - generic/auto-correction-feedback
+    mandatory: true
+    invocation_trigger: "After every N orchestrator actions OR on user request"
+    auto_invoke_frequency: 5  # Review every 5 orchestrator actions
+    responsibilities:
+      - "Monitor orchestrator's tool usage against config.yaml rules"
+      - "Detect delegation violations (direct execution when should delegate)"
+      - "Detect skipped verification steps"
+      - "Generate violation reports with specific evidence"
+      - "Provide auto-correction instructions to orchestrator"
+    deliverables:
+      - ".work/compliance-violations.yaml"  # Violation log
+      - ".work/auto-correction-actions.yaml"  # Required corrections
+    violation_detection_rules:
+      - rule: "Git operations must use workflow-orchestrator"
+        detect: "Orchestrator uses Bash tool with 'git commit|push|merge'"
+        action: "HALT + redirect to workflow-orchestrator"
+      - rule: "Code changes must use code-developer"
+        detect: "Orchestrator uses Edit/Write on src/ files (except typo <3 chars)"
+        action: "HALT + redirect to code-developer"
+      - rule: "Deliverable verification must use deliverable-evaluator"
+        detect: "Orchestrator declares completion without invoking evaluator"
+        action: "HALT + invoke deliverable-evaluator"
+      - rule: "Evidence-based verification required"
+        detect: "Evaluator PASS without screenshot/log in .work/evidence/"
+        action: "REJECT + request evidence"
+    enforcement_mode: "BLOCKING"  # BLOCKING = halt on violation, ADVISORY = warn only
+
+# Deliverable evaluation criteria (UPDATED 2025-11-07)
+deliverable_criteria:
+  # NEW: Phase 0 - Requirement Analysis (MANDATORY)
+  requirement_analysis:
+    - requirement: "All features have user stories"
+      verification: ".work/user-stories.yaml exists and complete"
+      evidence_required: "User story document with purpose, acceptance criteria"
+    - requirement: "All acceptance criteria are testable"
+      verification: "Each criterion can be verified objectively"
+      evidence_required: "Test scenarios mapped to criteria"
+    - requirement: "Out of scope is documented"
+      verification: ".work/requirements.yaml has 'out_of_scope' section"
+      evidence_required: "List of explicitly excluded features"
+    approval_gate:
+      - "orchestrator must approve"
+      - "Cannot proceed to design without approval"
+
+  # NEW: Phase 0.5 - Design Review (MANDATORY)
+  design_review:
+    - requirement: "Architecture diagram created"
+      verification: ".work/architecture.md with component diagram"
+      evidence_required: "Mermaid/diagram showing all components and integration points"
+    - requirement: "All integration points documented"
+      verification: ".work/interfaces.yaml specifies all A→B connections"
+      evidence_required: "Component interface contracts"
+    - requirement: "Test scenarios cover acceptance criteria"
+      verification: ".work/test-scenarios.yaml maps to acceptance criteria"
+      evidence_required: "Given/When/Then for each criterion"
+    - requirement: "Strategy-to-design mapping created"  # NEW
+      verification: ".work/strategy-design-verification.yaml exists"
+      evidence_required: "Each strategy mapped to design elements"
+      mandatory: true
+    approval_gate:
+      - "deliverable-evaluator must approve"
+      - "Cannot proceed to implementation without approval"
+
+  phase_completion:
+    - requirement: "All deliverables for phase completed"
+      verification: "Check file existence and basic functionality"
+    - requirement: "Integration points verified"  # NEW
+      verification: "All component connections tested"
+      evidence_required: "Integration test results"
+
+  code_quality:
+    - requirement: "Code passes linting"
+      verification: "npm run lint returns 0"
+    - requirement: "TypeScript compiles without errors"
+      verification: "npm run compile returns 0"
+    - requirement: "Integration points in code match design"  # NEW
+      verification: "Code review confirms A calls B as per architecture"
+      evidence_required: "Code review checklist completed"
+    - requirement: "Strategy realization code identified"  # NEW
+      verification: ".work/strategy-code-verification.md exists"
+      evidence_required: "Each strategy has corresponding code location"
+      mandatory: true
+    - requirement: "Anti-patterns (old strategy) not present"  # NEW
+      verification: "Anti-pattern checklist completed"
+      evidence_required: "Confirmation that old strategy code removed"
+      mandatory: true
+
+  testing:
+    - requirement: "Unit test coverage > 70%"
+      verification: "Jest coverage report shows > 70%"
+      evidence_required: "Coverage report attached"
+    - requirement: "All tests pass"
+      verification: "npm test returns 0"
+      evidence_required: "Test output log"
+    - requirement: "Integration tests for ALL integration points"  # NEW
+      verification: "Each A→B connection has integration test"
+      evidence_required: "Integration test suite passes"
+      mandatory: true
+    - requirement: "E2E tests for ALL user stories"  # NEW
+      verification: "Each user story has corresponding E2E test"
+      evidence_required: "E2E test results"
+      mandatory: true
+
+  functionality:
+    - requirement: "Feature demo with evidence"  # NEW - MANDATORY
+      verification: "Screenshot OR video showing feature working"
+      evidence_required: "Visual proof attached to evaluation"
+      mandatory: true
+      cannot_pass_without: "Screenshot/video file in .work/evidence/"
+
+    - requirement: "Manual smoke test completed"  # NEW - MANDATORY
+      verification: "Smoke test checklist filled out"
+      evidence_required: "Smoke test results log"
+      mandatory: true
+      cannot_pass_without: "Smoke test log in .work/evidence/"
+
+    - requirement: "Each acceptance criterion verified individually"  # NEW
+      verification: "Criterion-by-criterion checklist"
+      evidence_required: "Each criterion marked ✓ with evidence"
+      mandatory: true
+
+    - requirement: "Anti-patterns verified not present"  # NEW
+      verification: "Document and verify what should NOT happen"
+      evidence_required: "Anti-pattern checklist"
+      examples:
+        - "Zooming diagram A does NOT zoom diagram B"
+        - "PlantUML block does NOT show 'Loading...' in final render"
+
+    # OLD criteria (kept for reference but now require evidence)
+    - requirement: "Basic markdown preview works"
+      verification: "Manual test with sample.md"
+      evidence_required: "Screenshot of working preview"  # NEW
+    - requirement: "Mermaid diagrams render"
+      verification: "Test with mermaid sample"
+      evidence_required: "Screenshot showing rendered Mermaid diagram"  # NEW
+    - requirement: "PlantUML diagrams render (online)"
+      verification: "Test with PlantUML sample"
+      evidence_required: "Screenshot showing IMAGE (not 'Loading...')"  # NEW
+    - requirement: "Error isolation works"
+      verification: "Invalid diagram doesn't break preview"
+      evidence_required: "Screenshot of error message in preview"  # NEW
+    - requirement: "Zoom to 1000% works"
+      verification: "Zoom controls functional"
+      evidence_required: "Screenshot at 1000% zoom"  # NEW
+      note: "Verify WHAT zooms (diagram vs document) matches requirement"  # NEW
+    - requirement: "5+ themes available"
+      verification: "Theme switcher shows 5+ options"
+      evidence_required: "Screenshot of theme selector"  # NEW
+
+  packaging:
+    - requirement: "VSIX package builds"
+      verification: "vsce package succeeds"
+      evidence_required: "Build log showing success"
+    - requirement: "VSIX contains runtime dependencies"  # NEW
+      verification: "npm run validate-vsix passes"
+      evidence_required: "Validation script output"
+      mandatory: true
+    - requirement: "Extension installs in clean VSCode"
+      verification: "Manual installation test"
+      evidence_required: "Installation log + screenshot"  # NEW
+    - requirement: "Core commands execute successfully"  # NEW
+      verification: "Manual test of each registered command"
+      evidence_required: "Command execution log + screenshot"
+      mandatory: true
+      examples:
+        - "Open Preview command shows preview"
+        - "Diagrams render as images (not placeholders)"
+
+# NEW: Workflow enforcement
+workflow_enforcement:
+  mandatory_sequence:
+    - phase: "Phase 0: Requirement Analysis"
+      agent: "requirement-analyst"
+      can_skip: false
+      outputs:
+        - ".work/requirements.yaml"
+        - ".work/user-stories.yaml"
+        - ".work/acceptance-criteria.yaml"
+      approval_required: true
+
+    - phase: "Phase 0.5: Design Review"
+      agent: "design-architect"
+      can_skip: false
+      depends_on: "Phase 0 approval"
+      outputs:
+        - ".work/architecture.md"
+        - ".work/interfaces.yaml"
+        - ".work/test-scenarios.yaml"
+      approval_required: true
+
+    - phase: "Implementation"
+      agent: "code-developer"
+      can_skip: false
+      depends_on: "Phase 0.5 approval"
+      must_include:
+        - "Integration tests for all integration points"
+        - "E2E tests for all user stories"
+
+    - phase: "Test Quality Review"
+      agent: "quality-reviewer"
+      can_skip: false
+      depends_on: "Test implementation complete"
+      must_verify:
+        - "Each test verifies business logic (not just string matching)"
+        - "Tests would fail if requirement is broken (not just if code is deleted)"
+        - "Anti-patterns from test_design_principles are absent"
+      deliverables:
+        - ".work/test-review-report.yaml"
+      approval_required: true
+      auto_correction:
+        enabled: true
+        max_iterations: 3
+        on_failure: "Report to orchestrator → code-developer fixes → re-review"
+
+    - phase: "Evaluation"
+      agent: "deliverable-evaluator"
+      can_skip: false
+      depends_on: "Implementation complete"
+      independence_requirement: "MUST be different agent from implementer"
+      must_verify:
+        - "All acceptance criteria individually checked"
+        - "Screenshot/video evidence attached"
+        - "Smoke test log attached"
+        - "Integration tests pass"
+        - "E2E tests pass"
+        - "Strategy compliance verified"  # NEW
+        - "Strategy-based AC all pass with evidence"  # NEW
+      cannot_pass_without:
+        - "Evidence files in .work/evidence/"
+        - "All acceptance criteria marked ✓"
+        - "Strategy compliance checklist completed"  # NEW
+        - "No conflicts of interest (evaluator ≠ implementer)"  # NEW
+
+# File structure
+structure:
+  src:
+    - "extension.ts          # Entry point"
+    - "markdown/processor.ts # Markdown processing"
+    - "renderers/mermaid.ts  # Mermaid renderer"
+    - "renderers/plantuml.ts # PlantUML renderer"
+    - "webview/preview.ts    # Preview panel"
+    - "themes/manager.ts     # Theme management"
+    - "config/settings.ts    # Configuration"
+
+  test:
+    - "unit/*.test.ts        # Unit tests"
+    - "integration/*.spec.ts # Integration tests"
+    - "fixtures/*.md         # Test markdown files"
+
+  resources:
+    - "themes/*.css          # Theme stylesheets"
+    - "webview/*.html        # Webview templates"
+    - "webview/*.js          # Webview scripts"
+
+# Success metrics
+success_metrics:
+  mandatory:
+    - "All 6 core requirements implemented"
+    - "Tests pass with >70% coverage"
+    - "No critical bugs"
+    - "Package builds successfully"
+    - "Performance targets met"
+
+  optional:
+    - "Integration tests implemented"
+    - "Comprehensive documentation"
+    - "Accessibility features"
+
+# Git configuration
+git:
+  output: "japanese"
+  claude_signature: false  # Do not include Claude Code signature in commits
+  allow_push: false  # Do not automatically push commits to remote
+
+# NEW: Orchestrator delegation policy (Auto-correction enforcement)
+orchestrator_delegation:
+  enforcement_mode: "auto_correct"  # auto_correct | warn | off
+  # auto_correct: Violations detected → automatic redirect to appropriate agent (no session halt)
+  # warn: Violations detected → warning only (development/debug mode)
+  # off: Violation detection disabled
+
+  pre_task_checklist:
+    enabled: true
+    file: ".work/delegation-checklist.yaml"
+    must_run_before: "Any tool execution by orchestrator"
+
+  always_delegate:
+    git_operations:
+      agent: "workflow-orchestrator"
+      operations: ["commit", "push", "merge", "rebase", "tag"]
+      violation_action: "REDIRECT"
+      redirect_message: "Git operation detected. Redirecting to workflow-orchestrator..."
+
+    deliverable_verification:
+      agent: "deliverable-evaluator"
+      trigger: "After any file creation/modification in src/"
+      violation_action: "AUTO_SCHEDULE"  # Schedule evaluator after completion
+
+    compliance_monitoring:  # NEW: Automatic violation detection
+      agent: "process-compliance-monitor"
+      trigger: "After every 5 orchestrator tool uses OR when orchestrator declares task complete"
+      violation_action: "AUTO_INVOKE"  # Automatically invoke monitor
+      auto_invoke_conditions:
+        - "Orchestrator used 5+ tools without invoking monitor"
+        - "Orchestrator used Edit/Write on src/ without delegating to code-developer"
+        - "Orchestrator used Bash with git commit/push/merge"
+        - "Orchestrator declared completion without invoking deliverable-evaluator"
+      monitor_outputs:
+        - ".work/compliance-violations.yaml"  # Violations found
+        - ".work/auto-correction-actions.yaml"  # Required actions
+      enforcement:
+        mode: "BLOCKING"  # Halt orchestrator until violations corrected
+        correction_required: true
+        user_notification: "Process violation detected. Auto-correcting..."
+
+  may_execute_directly:
+    read_only_investigation:
+      operations: ["Read", "Grep", "Glob", "Bash(git status|git log|ls)"]
+      condition: "No files modified AND scope <= 5 files"
+      escalation_rule: "If scope > 5 files → AUTO_REDIRECT to Explore agent"
+      escalation_action: "REDIRECT"
+
+  prohibited_direct_execution:
+    - operation: "git commit"
+      redirect_to: "workflow-orchestrator"
+      violation_action: "REDIRECT"
+      auto_recovery: true
+      recovery_steps:
+        - "Cancel pending git operation"
+        - "Package task context for workflow-orchestrator"
+        - "Invoke workflow-orchestrator with original user request"
+        - "Report delegation to user (not error)"
+
+    - operation: "Edit|Write for src/ files"
+      redirect_to: "code-developer"
+      exception: "Changes < 3 chars (typo fixes)"
+      violation_action: "REDIRECT"
+      auto_recovery: true
+      recovery_steps:
+        - "Cancel pending Edit/Write"
+        - "Delegate to code-developer with file path and change description"
+
+    - operation: "Quality judgment without evidence"
+      redirect_to: "deliverable-evaluator"
+      violation_action: "REDIRECT"
+      auto_recovery: true
+      recovery_steps:
+        - "Cancel quality judgment"
+        - "Invoke deliverable-evaluator with deliverable path"
+
+# NEW: Auto-correction workflow
+auto_correction_workflow:
+  enabled: true
+
+  violation_detection:
+    - detector: "orchestrator (self-check)"
+      timing: "Before tool execution"
+      action: "Self-redirect before violation occurs"
+
+    - detector: "quality-reviewer"
+      timing: "After deliverable creation"
+      action: "Report to orchestrator → orchestrator invokes code-developer for fix"
+
+    - detector: "deliverable-evaluator"
+      timing: "After phase completion"
+      action: "Report to orchestrator → orchestrator decides remediation"
+
+  correction_protocol:
+    step1: "Detect violation (via pre_task_checklist or post-task review)"
+    step2: "Identify correct agent (from orchestrator_delegation rules)"
+    step3: "Package task context (user request + current state)"
+    step4: "Invoke correct agent automatically"
+    step5: "Report delegation to user (format: 'Delegating to {agent} for {reason}')"
+    step6: "Continue with delegated agent's output"
+
+  user_notification_format: |
+    [Auto-correction] {violation_type} detected.
+    Redirecting to {target_agent}...
+
+    {target_agent} is now handling: {task_description}
+
+  prohibited_user_notifications:
+    - "Task stopped"
+    - "Session halted"
+    - "Please manually..."
+    # User should see seamless delegation, not errors
+
+  max_iterations: 3  # Maximum auto-correction attempts before user intervention
+  escalation_after_max_iterations:
+    action: "Report to user with summary"
+    message_template: |
+      Auto-correction failed after {iterations} attempts.
+
+      Issue: {violation_description}
+      Attempted fixes: {fix_history}
+
+      Manual intervention required. Please review:
+      {deliverable_path}
+
+# NEW: .work directory structure enforcement
+work_directory_policy:
+  structure:
+    permanent_knowledge:  # Root level only - Single Source of Truth
+      - name: "design.yaml"
+        purpose: "Current requirements and specifications (OVERWRITE, no versions)"
+        format: "YAML with requirements/architecture/data_flow/configuration/testing_strategy"
+
+      - name: "structure.yaml"
+        purpose: "Current internal architecture (OVERWRITE, no versions)"
+        format: "YAML with internal_architecture/file_structure/class_design/database_design"
+
+      - name: "issue-solutions.yaml"
+        purpose: "Historical bug patterns and solutions (APPEND only)"
+        format: "YAML with issues array containing problem/solution/resolved_date/files_changed"
+
+      - name: "STRATEGY.md"
+        purpose: "Current development process and strategy (OVERWRITE, no versions)"
+        format: "Markdown with process documentation"
+
+    temporary_workspace:  # archive/ subdirectory
+      location: ".work/archive/YYYY-MM-DD-description/"
+      lifecycle: "Created during investigation → Kept for historical reference"
+
+  prohibited_patterns:
+    - pattern: "*-v2.yaml, *-v3.yaml, *_old.yaml"
+      reason: "Versioning violates 'current state only' principle"
+      action: "Consolidate into canonical file, move old versions to archive/"
+
+    - pattern: "Multiple files with overlapping purpose (e.g., zoom-requirements.yaml AND modal-zoom-requirements.yaml)"
+      reason: "Ambiguity about which is authoritative"
+      action: "Merge into single file with clear scope"
+
+  cleanup_triggers:
+    - trigger: "After issue resolution"
+      action: "Move investigation files to archive/YYYY-MM-DD-description/"
+
+    - trigger: "After requirements change"
+      action: "Update design.yaml/structure.yaml (overwrite), do NOT create design-v2.yaml"
+
+    - trigger: "Before phase completion"
+      action: "Audit .work/ for versioned files, consolidate or move to archive/"
+

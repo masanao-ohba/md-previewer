@@ -1,0 +1,193 @@
+/**
+ * VS Code Dark Theme
+ * Matches VS Code's default dark theme
+ */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.6;
+    color: #cccccc;
+    background-color: #1e1e1e;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #cccccc;
+}
+
+h1 {
+    font-size: 2em;
+    border-bottom: 1px solid #3c3c3c;
+    padding-bottom: 0.3em;
+}
+
+h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid #3c3c3c;
+    padding-bottom: 0.3em;
+}
+
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em; }
+h5 { font-size: 0.875em; }
+h6 { font-size: 0.85em; color: #8c8c8c; }
+
+/* Code */
+code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    font-family: Menlo, Monaco, Consolas, 'Droid Sans Mono', 'Courier New', monospace;
+    color: #ce9178;
+}
+
+pre {
+    padding: 16px;
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #252526;
+    border-radius: 3px;
+    border: 1px solid #3c3c3c;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    color: #cccccc;
+}
+
+/* Blockquotes */
+blockquote {
+    padding: 0 1em;
+    color: #8c8c8c;
+    border-left: 0.25em solid #3c3c3c;
+    margin: 0 0 16px 0;
+}
+
+blockquote > :first-child {
+    margin-top: 0;
+}
+
+blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+/* Lists */
+ul, ol {
+    padding-left: 2em;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+li + li {
+    margin-top: 0.25em;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    margin: 16px 0;
+}
+
+table th,
+table td {
+    padding: 6px 13px;
+    border: 1px solid #3c3c3c;
+}
+
+table th {
+    font-weight: 600;
+    background-color: #252526;
+}
+
+table tr {
+    background-color: #1e1e1e;
+    border-top: 1px solid #3c3c3c;
+}
+
+table tr:nth-child(2n) {
+    background-color: #252526;
+}
+
+/* Links */
+a {
+    color: #3794ff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Horizontal Rule */
+hr {
+    height: 0.25em;
+    padding: 0;
+    margin: 24px 0;
+    background-color: #3c3c3c;
+    border: 0;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    box-sizing: border-box;
+    background-color: #ffffff;
+}
+
+/* Inline Elements */
+strong {
+    font-weight: 600;
+}
+
+em {
+    font-style: italic;
+}
+
+/* Diagrams */
+.mermaid-container,
+.plantuml-container {
+    margin: 16px 0;
+    text-align: center;
+    background-color: #ffffff;
+    padding: 16px;
+    border-radius: 6px;
+}
+
+/* Diagram Errors */
+.diagram-error {
+    border: 2px solid #f48771;
+    border-radius: 6px;
+    padding: 16px;
+    margin: 16px 0;
+    background-color: #2b1f1f;
+}
+
+.diagram-error strong {
+    color: #f48771;
+}
+
+.diagram-error p {
+    margin: 8px 0;
+    color: #8c8c8c;
+}
+
+.diagram-error summary {
+    cursor: pointer;
+    color: #3794ff;
+    font-size: 14px;
+}
+
+.diagram-error summary:hover {
+    text-decoration: underline;
+}

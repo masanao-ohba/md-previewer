@@ -1,0 +1,56 @@
+# Development directories
+.vscode/**
+.vscode-test/**
+src/**
+
+# Development configuration files
+.gitignore
+.eslintrc.json
+.prettierrc
+tsconfig.json
+jest.config.js
+
+# Build artifacts
+**/*.map
+**/*.ts
+!out/**/*.js
+
+# Development-only dependencies (safe to exclude)
+node_modules/@types/**
+node_modules/@vscode/**
+node_modules/typescript/**
+node_modules/jest/**
+node_modules/ts-jest/**
+node_modules/eslint/**
+node_modules/@typescript-eslint/**
+node_modules/prettier/**
+node_modules/vsce/**
+node_modules/@vscode/test-electron/**
+
+# CRITICAL: Runtime dependencies MUST be included in VSIX
+# DO NOT add these to exclusion list:
+# - node_modules/markdown-it/** (required for Markdown parsing)
+# - node_modules/mermaid/** (required for diagram rendering)
+# - Any other packages listed in "dependencies" (not "devDependencies")
+
+# Project management
+.claude/**
+.work/**
+
+# Test files
+test-samples/**
+coverage/**
+
+# Documentation (development-only)
+PHASE*.md
+*_REPORT.md
+
+# Investigation artifacts (screenshots, videos, logs)
+*.mov
+*.png
+video-frame-*.png
+test-*.png
+*-debug.png
+*.log
+console.txt
+chatgpt.txt

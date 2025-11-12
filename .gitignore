@@ -1,0 +1,23 @@
+out
+node_modules
+.vscode-test/
+*.vsix
+.DS_Store
+coverage/
+*.log
+.work
+test-samples/
+debug-*
+
+# Temporary investigation files
+*_REPORT.md
+*_IMPLEMENTATION_REPORT.md
+advice_*.txt
+console.txt
+test-*.html
+test-*.png
+test-*.json
+fitratio-investigation.log
+
+# Playwright temporary directory
+.playwright-mcp/
