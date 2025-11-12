@@ -5,6 +5,37 @@ All notable changes to the "Markdown Preview Enhanced" extension will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.5, 0.1.6] - 2025-11-12
+
+### Changed
+- Updated README documentation
+
+## [0.1.4] - 2025-11-12
+
+### Added
+- Copy-to-clipboard button for code blocks
+- Copy-to-clipboard button extended to diagram blocks (Mermaid and PlantUML)
+- Refactored copy button implementation into reusable component
+
+### Changed
+- Updated plugin icon
+
+## [0.1.3] - 2025-11-12
+
+### Added
+- Checkbox rendering support for Markdown task lists
+- Syntax highlighting improvements for checkboxes
+
+## [0.1.2] - 2025-11-12
+
+### Performance
+- Improved file size optimization
+
+## [0.1.1] - 2025-11-12
+
+### Added
+- Checkbox support for task lists
+
 ## [0.1.0] - 2025-11-07
 
 ### Added - Phase 4: Testing & Polish ✅
