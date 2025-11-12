@@ -1,4 +1,5 @@
 import MarkdownIt from 'markdown-it';
+import taskLists from 'markdown-it-task-lists';
 import { MermaidRenderer } from '../renderers/MermaidRenderer';
 import { PlantUMLRenderer } from '../renderers/PlantUMLRenderer';
 
@@ -21,6 +22,13 @@ export class MarkdownProcessor {
       typographer: true, // Enable smartquotes and other typographic replacements
       breaks: false, // Do not convert \n to <br>
       xhtmlOut: false, // Use '>' to close single tags (<br>)
+    });
+
+    // Enable GitHub-style task list checkboxes
+    this.md.use(taskLists, {
+      enabled: true, // Enable checkbox rendering
+      label: true, // Wrap checkbox in label for better UX
+      labelAfter: true, // Place label after checkbox
     });
 
     // Store the default fence renderer before overriding

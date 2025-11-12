@@ -511,4 +511,96 @@ System --> User: Response
     expect(html).toContain('<img');
     expect(html).toContain('plantuml.com/plantuml/svg/');
   });
+
+  /**
+   * Without this test, we would not be guaranteed that:
+   * - Unchecked checkboxes render correctly as HTML input elements
+   * - Checkbox state is preserved in the HTML output
+   * - Checkbox-specific CSS classes are applied
+   */
+  test('should render unchecked checkboxes', async () => {
+    const markdown = '- [ ] Task item';
+    const html = await processor.process(markdown);
+
+    expect(html).toContain('<input');
+    expect(html).toContain('type="checkbox"');
+    expect(html).toContain('class="task-list-item-checkbox"');
+    expect(html).not.toContain('checked=""');
+    expect(html).not.toContain(' checked');
+    expect(html).toContain('Task item');
+  });
+
+  /**
+   * Without this test, we would not be guaranteed that:
+   * - Checked checkboxes render correctly as HTML input elements
+   * - The checked attribute is present
+   * - Checkbox state matches the source Markdown
+   */
+  test('should render checked checkboxes', async () => {
+    const markdown = '- [x] Completed task';
+    const html = await processor.process(markdown);
+
+    expect(html).toContain('<input');
+    expect(html).toContain('type="checkbox"');
+    expect(html).toContain('checked');
+    expect(html).toContain('class="task-list-item-checkbox"');
+    expect(html).toContain('Completed task');
+  });
+
+  /**
+   * Without this test, we would not be guaranteed that:
+   * - Multiple checkboxes in a list are independently rendered
+   * - Mixed checked/unchecked states are preserved correctly
+   * - List structure is maintained with checkboxes
+   */
+  test('should render mixed checkbox list', async () => {
+    const markdown = `- [x] Task 1 completed
+- [ ] Task 2 pending
+- [x] Task 3 completed
+- [ ] Task 4 pending`;
+    const html = await processor.process(markdown);
+
+    // Check that we have 4 checkboxes
+    const checkboxMatches = html.match(/<input[^>]*type="checkbox"/g);
+    expect(checkboxMatches).toHaveLength(4);
+
+    // Check that we have 2 checked boxes
+    const checkedMatches = html.match(/<input[^>]*checked/g);
+    expect(checkedMatches).toHaveLength(2);
+
+    // Verify all task text is present
+    expect(html).toContain('Task 1 completed');
+    expect(html).toContain('Task 2 pending');
+    expect(html).toContain('Task 3 completed');
+    expect(html).toContain('Task 4 pending');
+  });
+
+  /**
+   * Without this test, we would not be guaranteed that:
+   * - Nested lists with checkboxes render correctly
+   * - Indentation/nesting structure is preserved
+   * - Parent and child checkboxes are independently managed
+   */
+  test('should render nested checkbox lists', async () => {
+    const markdown = `- [x] Parent task
+  - [ ] Child task 1
+  - [x] Child task 2
+- [ ] Another parent task`;
+    const html = await processor.process(markdown);
+
+    // Check that we have 4 checkboxes
+    const checkboxMatches = html.match(/<input[^>]*type="checkbox"/g);
+    expect(checkboxMatches).toHaveLength(4);
+
+    // Check that we have 2 checked boxes
+    const checkedMatches = html.match(/<input[^>]*checked/g);
+    expect(checkedMatches).toHaveLength(2);
+
+    // Verify nested list structure (should have nested <ul> tags)
+    expect(html).toContain('class="contains-task-list"');
+    expect(html).toContain('Parent task');
+    expect(html).toContain('Child task 1');
+    expect(html).toContain('Child task 2');
+    expect(html).toContain('Another parent task');
+  });
 });
