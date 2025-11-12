@@ -299,3 +299,78 @@ code.hljs {
     font-weight: bold
   }
 }
+
+/* === Code Block Copy Button === */
+
+.code-block-wrapper {
+  position: relative;
+  margin: 16px 0;
+}
+
+.copy-code-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  line-height: 16px;
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  background-color: #000000;
+  color: #ffffff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, background-color 0.1s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 10;
+}
+
+.code-block-wrapper:hover .copy-code-button {
+  opacity: 1;
+}
+
+.copy-code-button:hover {
+  background-color: #222222;
+}
+
+.copy-code-button:focus {
+  outline: 2px solid #f38518;
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+.copy-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.button-text {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+}
+
+.button-feedback {
+  display: none;
+  color: #00ff00;
+  font-weight: 500;
+}
+
+.copy-code-button.copied .button-text {
+  display: none;
+}
+
+.copy-code-button.copied .button-feedback {
+  display: inline;
+}
+
+.copy-code-button.copied {
+  opacity: 1;
+}
+
+/* Hide copy button in modal zoom view */
+#modal-overlay .copy-code-button,
+#modal-diagram-container .copy-code-button {
+  display: none !important;
+}

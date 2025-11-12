@@ -102,7 +102,11 @@ export class MarkdownProcessor {
 
     try {
       // Render markdown with diagram support
-      const html = this.md.render(markdown);
+      let html = this.md.render(markdown);
+
+      // Add copy buttons to code blocks
+      html = this.addCopyButtons(html);
+
       return html;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -197,6 +201,35 @@ export class MarkdownProcessor {
   <p style="margin: 8px 0; color: #57606a;">${this.escapeHtml(errorMessage)}</p>
 </div>`;
     }
+  }
+
+  /**
+   * Wrap code blocks with copy button container.
+   * This is called as a post-processing step after markdown-it renders the HTML.
+   *
+   * @param html - Rendered HTML from markdown-it
+   * @returns HTML with copy buttons added
+   */
+  private addCopyButtons(html: string): string {
+    // Regular expression to find <pre><code> blocks
+    // This matches standard code blocks but NOT diagram containers
+    const codeBlockRegex = /<pre><code([^>]*)>([\s\S]*?)<\/code><\/pre>/g;
+
+    // Copy button HTML with SVG icon
+    const copyButtonHtml = `
+    <button class="copy-code-button" aria-label="Copy code to clipboard" title="Copy code">
+      <svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5.75 4.75H10.25V1.75H5.75V4.75ZM4.5 1.75C4.5 1.05964 5.05964 0.5 5.75 0.5H10.25C10.9404 0.5 11.5 1.05964 11.5 1.75V4.75H13.25C13.9404 4.75 14.5 5.30964 14.5 6V13.25C14.5 13.9404 13.9404 14.5 13.25 14.5H2.75C2.05964 14.5 1.5 13.9404 1.5 13.25V6C1.5 5.30964 2.05964 4.75 2.75 4.75H4.5V1.75ZM2.75 6V13.25H13.25V6H2.75Z" fill="currentColor"/>
+      </svg>
+      <span class="button-text">Copy</span>
+      <span class="button-feedback" role="status" aria-live="polite"></span>
+    </button>
+  `.trim();
+
+    // Replace each code block with wrapped version
+    return html.replace(codeBlockRegex, (_match, attributes, code) => {
+      return `<div class="code-block-wrapper">${copyButtonHtml}<pre><code${attributes}>${code}</code></pre></div>`;
+    });
   }
 
   /**
