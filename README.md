@@ -42,6 +42,13 @@ Bob --> Alice: Hi!
 ```
 ````
 
+### 📋 Copy to Clipboard Feature
+- One-click copy for code blocks
+- One-click copy for diagrams (Mermaid & PlantUML)
+- Visual feedback on successful copy
+- Hover to reveal copy button
+- Supports all code languages and diagram types
+
 ### 🔍 Diagram Zoom Feature
 - Click diagrams to open in modal view
 - Zoom range: 10% - 1000%
@@ -216,6 +223,7 @@ To use local mode (optional):
 - Diagram zoom & pan functionality
 - Modal diagram viewer
 - Multiple theme support
+- Copy to clipboard for code blocks and diagrams
 - E2E test suite
 
 ## License
