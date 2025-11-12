@@ -1,9 +1,9 @@
 {
-  "name": "markdown-preview-enhanced",
-  "displayName": "Markdown Preview Enhanced",
+  "name": "md-previewer",
+  "displayName": "MD Previewer - Mermaid & PlantUML",
   "description": "Advanced Markdown preview with Mermaid and PlantUML diagram support",
   "version": "0.1.0",
-  "publisher": "your-publisher-name",
+  "publisher": "MasanaoOhbaAzurePublisher",
   "repository": {
     "type": "git",
     "url": "https://github.com/masanao-ohba/md-previewer.git"
@@ -155,6 +155,7 @@
   },
   "dependencies": {
     "markdown-it": "^14.0.0",
+    "markdown-it-task-lists": "^2.1.1",
     "mermaid": "^10.9.5"
   }
 }
