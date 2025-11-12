@@ -140,6 +140,15 @@ Absolute path to PlantUML JAR file
 "markdownPreviewEnhanced.plantuml.jarPath": "/path/to/plantuml.jar"
 ```
 
+#### PlantUML Request Type (for online mode)
+HTTP method used when calling the PlantUML server. Use **GET** for classic URL-based rendering or **POST** to send the diagram source in the request body when diagrams are too large for URL encoding.
+
+```json
+"markdownPreviewEnhanced.plantuml.requestType": "get"
+```
+
+Options: `get`, `post`
+
 #### PlantUML Server (for online mode)
 PlantUML server URL
 
@@ -189,6 +198,13 @@ To use local mode (optional):
 
 - Visual Studio Code 1.85.0 or later
 - For PlantUML local mode: Java 8+ and PlantUML.jar
+
+## Manual verification
+
+To visually verify that POST-mode rendering works for large PlantUML diagrams (40+ lines), open
+`tests/manual/plantuml-post-large.html` in a browser. The page reproduces the preview markup and
+loads an 80-line sequence diagram via POST, making it easy to confirm that the loader swaps to the
+rendered SVG instead of falling back to Java-based local rendering.
 
 ## Known Limitations
 

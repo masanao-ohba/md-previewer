@@ -5,36 +5,67 @@
  * without requiring the actual VSCode runtime environment.
  */
 
+const defaultConfiguration = {
+  'plantuml.mode': 'online',
+  'plantuml.jarPath': '',
+  'plantuml.requestType': 'get',
+  'plantuml.server': 'https://www.plantuml.com/plantuml/svg/',
+  'preview.theme': 'github-light',
+} as const;
+
+type ConfigurationValue = unknown;
+type ConfigurationStore = Record<string, ConfigurationValue>;
+
+const configurationStore: ConfigurationStore = { ...defaultConfiguration };
+
+interface TestConfiguration {
+  get: jest.Mock<ConfigurationValue, [string, ConfigurationValue?]>;
+  __set: (key: string, value: ConfigurationValue) => void;
+  __reset: () => void;
+}
+
+const configuration: TestConfiguration = {
+  get: jest.fn((key: string, defaultValue?: ConfigurationValue) => {
+    if (Object.prototype.hasOwnProperty.call(configurationStore, key)) {
+      return configurationStore[key];
+    }
+    return defaultValue as ConfigurationValue;
+  }),
+  __set(key: string, value: ConfigurationValue) {
+    configurationStore[key] = value;
+  },
+  __reset() {
+    Object.assign(configurationStore, defaultConfiguration);
+  },
+};
+
+beforeEach(() => {
+  configuration.__reset();
+});
+
 // Mock the entire VSCode module
-jest.mock('vscode', () => ({
-  workspace: {
-    getConfiguration: jest.fn(() => ({
-      get: jest.fn((key: string, defaultValue?: any) => {
-        if (key === 'plantuml.mode') {
-          return 'online';
-        }
-        if (key === 'plantuml.jarPath') {
-          return '';
-        }
-        if (key === 'preview.theme') {
-          return 'github-light';
-        }
-        return defaultValue;
-      }),
-    })),
-  },
-  window: {
-    activeColorTheme: {
-      kind: 1, // ColorThemeKind.Light
+jest.mock(
+  'vscode',
+  () => ({
+    workspace: {
+      getConfiguration: jest.fn(() => configuration),
     },
-  },
-  ColorThemeKind: {
-    Light: 1,
-    Dark: 2,
-    HighContrast: 3,
-    HighContrastLight: 4,
-  },
-  Uri: {
-    file: jest.fn((path: string) => ({ fsPath: path })),
-  },
-}), { virtual: true });
+    window: {
+      activeColorTheme: {
+        kind: 1, // ColorThemeKind.Light
+      },
+    },
+    ColorThemeKind: {
+      Light: 1,
+      Dark: 2,
+      HighContrast: 3,
+      HighContrastLight: 4,
+    },
+    Uri: {
+      file: jest.fn((path: string) => ({ fsPath: path })),
+    },
+  }),
+  { virtual: true }
+);
+
+export const testConfiguration = configuration;

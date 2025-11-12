@@ -41,6 +41,10 @@ export class PlantUMLRenderer {
     // Get configuration
     const config = vscode.workspace.getConfiguration('markdownPreviewEnhanced');
     const configuredJarPath = jarPath || config.get<string>('plantuml.jarPath', '');
+    const requestType =
+      (config.get<string>('plantuml.requestType', 'get') || 'get').toLowerCase() === 'post'
+        ? 'post'
+        : 'get';
 
     try {
       // Strategy 1: Automatic mode selection based on diagram size
@@ -50,7 +54,7 @@ export class PlantUMLRenderer {
         const lineCount = this.detectDiagramSize(content);
 
         // Automatically select rendering mode based on size threshold
-        renderMode = this.selectRenderingMode(lineCount);
+        renderMode = this.selectRenderingMode(lineCount, requestType);
       }
 
       if (renderMode === 'local') {
@@ -89,7 +93,14 @@ export class PlantUMLRenderer {
    * @param lineCount - Number of lines in the diagram
    * @returns Rendering mode ('online' or 'local')
    */
-  private static selectRenderingMode(lineCount: number): 'online' | 'local' {
+  private static selectRenderingMode(
+    lineCount: number,
+    requestType: 'get' | 'post'
+  ): 'online' | 'local' {
+    if (requestType === 'post') {
+      return 'online';
+    }
+
     const ADAPTIVE_RENDERING_THRESHOLD = 40; // Strategy 1: Threshold for automatic fallback
     return lineCount < ADAPTIVE_RENDERING_THRESHOLD ? 'online' : 'local';
   }
@@ -109,28 +120,47 @@ export class PlantUMLRenderer {
     console.log('[PlantUML] Starting online rendering');
 
     try {
-      // Detect diagram size
-      const lineCount = this.detectDiagramSize(content);
-      console.log('[PlantUML] Diagram size:', lineCount, 'lines');
+      const config = vscode.workspace.getConfiguration('markdownPreviewEnhanced');
+      const requestType = (config.get<string>('plantuml.requestType', 'get') || 'get').toLowerCase();
+      const server = this.normalizeServerUrl(
+        config.get<string>('plantuml.server', this.PLANTUML_SERVER) || this.PLANTUML_SERVER
+      );
 
-      // Encode PlantUML source for the URL
-      const encoded = this.encodePlantUML(content);
+      if (requestType === 'post') {
+        return this.renderOnlinePost(content, server);
+      }
 
-      // Add ~1 prefix for DEFLATE format
-      // PlantUML server URL format:
-      // - DEFLATE: https://www.plantuml.com/plantuml/svg/~1{encoded}
-      // - HUFFMAN (deprecated): https://www.plantuml.com/plantuml/svg/{encoded}
-      const diagramUrl = `${this.PLANTUML_SERVER}~1${encoded}`;
-      const diagramId = `plantuml-${this.diagramCounter++}`;
+      return this.renderOnlineGet(content, server);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown encoding error';
+      console.error('[PlantUML] Rendering error:', error);
+      return this.renderError(errorMessage, content);
+    }
+  }
 
-      console.log('[PlantUML] Encoding mode: DEFLATE');
-      console.log('[PlantUML] Generated URL:', diagramUrl);
-      console.log('[PlantUML] URL format check:', diagramUrl.includes('~1') ? '✓ DEFLATE format' : '✗ Missing ~1 prefix');
+  private static renderOnlineGet(content: string, server: string): string {
+    // Detect diagram size
+    const lineCount = this.detectDiagramSize(content);
+    console.log('[PlantUML] Diagram size:', lineCount, 'lines');
 
-      // Return HTML with img tag and error handling
-      // The onerror attribute provides fallback if the server fails
-      // The diagram-clickable class enables modal zoom on click
-      return `<div class="diagram-clickable plantuml-container" data-diagram-id="${diagramId}" data-diagram-type="plantuml">
+    // Encode PlantUML source for the URL
+    const encoded = this.encodePlantUML(content);
+
+    // Add ~1 prefix for DEFLATE format
+    // PlantUML server URL format:
+    // - DEFLATE: https://www.plantuml.com/plantuml/svg/~1{encoded}
+    // - HUFFMAN (deprecated): https://www.plantuml.com/plantuml/svg/{encoded}
+    const diagramUrl = `${server}~1${encoded}`;
+    const diagramId = `plantuml-${this.diagramCounter++}`;
+
+    console.log('[PlantUML] Encoding mode: DEFLATE');
+    console.log('[PlantUML] Generated URL:', diagramUrl);
+    console.log('[PlantUML] URL format check:', diagramUrl.includes('~1') ? '✓ DEFLATE format' : '✗ Missing ~1 prefix');
+
+    // Return HTML with img tag and error handling
+    // The onerror attribute provides fallback if the server fails
+    // The diagram-clickable class enables modal zoom on click
+    return `<div class="diagram-clickable plantuml-container" data-diagram-id="${diagramId}" data-diagram-type="plantuml">
   <img
     id="${diagramId}"
     src="${diagramUrl}"
@@ -143,11 +173,24 @@ export class PlantUMLRenderer {
     ${this.renderError('Failed to load diagram from PlantUML server', content)}
   </div>
 </div>`;
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown encoding error';
-      console.error('[PlantUML] Rendering error:', error);
-      return this.renderError(errorMessage, content);
-    }
+  }
+
+  private static renderOnlinePost(content: string, server: string): string {
+    const diagramId = `plantuml-${this.diagramCounter++}`;
+    const source = this.ensurePlantumlWrappers(content);
+    const encodedSource = Buffer.from(source, 'utf-8').toString('base64');
+    const escapedServer = this.escapeHtml(server);
+
+    const loadingIndicator = `<div class="plantuml-loading" style="padding: 12px; text-align: center; color: #57606a; font-size: 13px;">
+    Rendering PlantUML diagram…
+  </div>`;
+
+    return `<div class="diagram-clickable plantuml-container plantuml-pending" data-diagram-id="${diagramId}" data-diagram-type="plantuml" data-plantuml-render="post" data-plantuml-server="${escapedServer}" data-plantuml-source="${encodedSource}">
+  ${loadingIndicator}
+  <div class="plantuml-error-fallback" style="display: none;">
+    ${this.renderError('Failed to load diagram from PlantUML server', content)}
+  </div>
+</div>`;
   }
 
   /**
@@ -174,6 +217,18 @@ export class PlantUMLRenderer {
     // Phase 3 can implement the full deflate encoding if needed
     const compressed = this.compress(cleanSource);
     return this.encode64(compressed);
+  }
+
+  private static ensurePlantumlWrappers(content: string): string {
+    let plantUMLSource = content.trim();
+    if (!plantUMLSource.startsWith('@startuml')) {
+      plantUMLSource = '@startuml\n' + plantUMLSource;
+    }
+    if (!plantUMLSource.endsWith('@enduml')) {
+      plantUMLSource = plantUMLSource + '\n@enduml';
+    }
+
+    return plantUMLSource;
   }
 
   /**
@@ -415,6 +470,13 @@ export class PlantUMLRenderer {
    * @param text - Text to escape
    * @returns Escaped text
    */
+  private static normalizeServerUrl(server: string): string {
+    if (!server) {
+      return this.PLANTUML_SERVER;
+    }
+    return server.endsWith('/') ? server : `${server}/`;
+  }
+
   private static escapeHtml(text: string): string {
     const map: { [key: string]: string } = {
       '&': '&amp;',

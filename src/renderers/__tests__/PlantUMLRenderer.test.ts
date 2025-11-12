@@ -1,4 +1,5 @@
 import { PlantUMLRenderer } from '../PlantUMLRenderer';
+import { testConfiguration } from '../../__tests__/setup';
 
 /**
  * Test suite for PlantUMLRenderer.
@@ -156,6 +157,21 @@ describe('PlantUMLRenderer', () => {
    * - onerror attribute handles server failures
    * - Fallback error message is present
    */
+  test('should render POST request markup when configured', () => {
+    testConfiguration.__set('plantuml.requestType', 'post');
+    const content = `@startuml
+Alice -> Bob: Hello
+@enduml`;
+
+    const html = PlantUMLRenderer.renderOnline(content);
+
+    expect(html).toContain('plantuml-pending');
+    expect(html).toContain('data-plantuml-render="post"');
+    expect(html).toContain('data-plantuml-source=');
+    expect(html).toContain('data-plantuml-server="https://www.plantuml.com/plantuml/svg/"');
+    expect(html).not.toContain('<img');
+  });
+
   test('should include error fallback mechanism', () => {
     const content = '@startuml\nAlice -> Bob\n@enduml';
     const html = PlantUMLRenderer.renderOnline(content);
@@ -358,18 +374,38 @@ describe('PlantUMLRenderer', () => {
   test('should select online mode for small diagrams', () => {
     const selector = (PlantUMLRenderer as any).selectRenderingMode;
 
-    expect(selector(1)).toBe('online');
-    expect(selector(10)).toBe('online');
-    expect(selector(39)).toBe('online');  // Just below threshold
+    expect(selector(1, 'get')).toBe('online');
+    expect(selector(10, 'get')).toBe('online');
+    expect(selector(39, 'get')).toBe('online'); // Just below threshold
   });
 
   test('should select local mode for large diagrams', () => {
     const selector = (PlantUMLRenderer as any).selectRenderingMode;
 
-    expect(selector(40)).toBe('local');   // At threshold
-    expect(selector(50)).toBe('local');
-    expect(selector(100)).toBe('local');
-    expect(selector(412)).toBe('local');  // User's actual test case
+    expect(selector(40, 'get')).toBe('local'); // At threshold
+    expect(selector(50, 'get')).toBe('local');
+    expect(selector(100, 'get')).toBe('local');
+    expect(selector(412, 'get')).toBe('local'); // User's actual test case
+  });
+
+  test('should prefer online mode for large diagrams when POST mode is configured', () => {
+    const selector = (PlantUMLRenderer as any).selectRenderingMode;
+
+    expect(selector(120, 'post')).toBe('online');
+    expect(selector(412, 'post')).toBe('online');
+  });
+
+  test('auto mode keeps online rendering for large diagrams when POST is configured', async () => {
+    testConfiguration.__set('plantuml.requestType', 'post');
+
+    const largeDiagramLines = Array.from({ length: 80 }, (_, i) => `Alice${i} -> Bob${i}: Message ${i}`).join('\n');
+    const content = `@startuml\n${largeDiagramLines}\n@enduml`;
+
+    const html = await PlantUMLRenderer.render(content);
+
+    expect(html).toContain('plantuml-pending');
+    expect(html).toContain('data-plantuml-render="post"');
+    expect(html).not.toContain('PlantUML JAR path is not configured');
   });
 
   /**

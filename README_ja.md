@@ -138,6 +138,15 @@ PlantUML JARファイルの絶対パス
 "markdownPreviewEnhanced.plantuml.jarPath": "/path/to/plantuml.jar"
 ```
 
+#### PlantUMLリクエスト方式（オンラインモード用）
+PlantUMLサーバーへアクセスする際のHTTPメソッドを指定します。従来のURLベース描画には**GET**、URLが長くなる大きなダイアグラムにはソースをリクエストボディで送信する**POST**を使用します。
+
+```json
+"markdownPreviewEnhanced.plantuml.requestType": "get"
+```
+
+オプション: `get`, `post`
+
 #### PlantUMLサーバー（オンラインモード用）
 PlantUMLサーバーのURL
 
@@ -187,6 +196,13 @@ PlantUMLサーバーのURL
 
 - Visual Studio Code 1.85.0 以降
 - PlantUMLローカルモードを使用する場合: Java 8+ および PlantUML.jar
+
+## 手動確認
+
+40 行以上の大きな PlantUML 図でも POST モードで描画できることを視覚的に確認したい場
+合は、ブラウザで `tests/manual/plantuml-post-large.html` を開いてください。拡張機能が生成
+するプレビューと同じマークアップで 80 行のシーケンス図を POST 経由で読み込み、ローダ
+ーが Java ベースのローカル描画に戻ることなく SVG に置き換わる様子を確認できます。
 
 ## 既知の制限事項
 

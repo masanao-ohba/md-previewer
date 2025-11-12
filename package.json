@@ -111,6 +111,19 @@
           "default": "",
           "description": "Absolute path to PlantUML JAR file (required for local mode). Example: /Users/username/plantuml.jar"
         },
+        "markdownPreviewEnhanced.plantuml.requestType": {
+          "type": "string",
+          "default": "get",
+          "enum": [
+            "get",
+            "post"
+          ],
+          "enumDescriptions": [
+            "Encode diagram in URL and request via HTTP GET",
+            "Send diagram source via HTTP POST and embed returned SVG"
+          ],
+          "description": "HTTP method used when contacting the PlantUML server"
+        },
         "markdownPreviewEnhanced.plantuml.server": {
           "type": "string",
           "default": "https://www.plantuml.com/plantuml/svg/",

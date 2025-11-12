@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PlantUML POST Large Diagram Demo</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        margin: 24px;
+        background: #f6f8fa;
+        color: #24292f;
+      }
+      h1 {
+        font-size: 20px;
+        margin-bottom: 12px;
+      }
+      .preview-frame {
+        background: #fff;
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 1px 2px rgba(27, 31, 35, 0.15);
+      }
+      .plantuml-loading {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PlantUML POST rendering sample (80 lines)</h1>
+    <p>
+      This static HTML reproduces the markup emitted by the extension when PlantUML POST rendering
+      is enabled. Open the file in a browser to verify that the client script exchanges a POST
+      request with <code>https://www.plantuml.com/plantuml/svg/</code> and replaces the loader with
+      the final SVG.
+    </p>
+    <div class="preview-frame">
+      <div
+        class="diagram-clickable plantuml-container plantuml-pending"
+        data-diagram-id="plantuml-demo"
+        data-diagram-type="plantuml"
+        data-plantuml-render="post"
+        data-plantuml-server="https://www.plantuml.com/plantuml/svg/"
+        data-plantuml-source="QHN0YXJ0dW1sCkFsaWNlMCAtPiBCb2IwOiBNZXNzYWdlIDAKQWxpY2UxIC0+IEJvYjE6IE1lc3NhZ2UgMQpBbGljZTIgLT4gQm9iMjogTWVzc2FnZSAyCkFsaWNlMyAtPiBCb2IzOiBNZXNzYWdlIDMKQWxpY2U0IC0+IEJvYjQ6IE1lc3NhZ2UgNApBbGljZTUgLT4gQm9iNTogTWVzc2FnZSA1CkFsaWNlNiAtPiBCb2I2OiBNZXNzYWdlIDYKQWxpY2U3IC0+IEJvYjc6IE1lc3NhZ2UgNwpBbGljZTggLT4gQm9iODogTWVzc2FnZSA4CkFsaWNlOSAtPiBCb2I5OiBNZXNzYWdlIDkKQWxpY2UxMCAtPiBCb2IxMDogTWVzc2FnZSAxMApBbGljZTExIC0+IEJvYjExOiBNZXNzYWdlIDExCkFsaWNlMTIgLT4gQm9iMTI6IE1lc3NhZ2UgMTIKQWxpY2UxMyAtPiBCb2IxMzogTWVzc2FnZSAxMwpBbGljZTE0IC0+IEJvYjE0OiBNZXNzYWdlIDE0CkFsaWNlMTUgLT4gQm9iMTU6IE1lc3NhZ2UgMTUKQWxpY2UxNiAtPiBCb2IxNjogTWVzc2FnZSAxNgpBbGljZTE3IC0+IEJvYjE3OiBNZXNzYWdlIDE3CkFsaWNlMTggLT4gQm9iMTg6IE1lc3NhZ2UgMTgKQWxpY2UxOSAtPiBCb2IxOTogTWVzc2FnZSAxOQpBbGljZTIwIC0+IEJvYjIwOiBNZXNzYWdlIDIwCkFsaWNlMjEgLT4gQm9iMjE6IE1lc3NhZ2UgMjEKQWxpY2UyMiAtPiBCb2IyMjogTWVzc2FnZSAyMgpBbGljZTIzIC0+IEJvYjIzOiBNZXNzYWdlIDIzCkFsaWNlMjQgLT4gQm9iMjQ6IE1lc3NhZ2UgMjQKQWxpY2UyNSAtPiBCb2IyNTogTWVzc2FnZSAyNQpBbGljZTI2IC0+IEJvYjI2OiBNZXNzYWdlIDI2CkFsaWNlMjcgLT4gQm9iMjc6IE1lc3NhZ2UgMjcKQWxpY2UyOCAtPiBCb2IyODogTWVzc2FnZSAyOApBbGljZTI5IC0+IEJvYjI5OiBNZXNzYWdlIDI5CkFsaWNlMzAgLT4gQm9iMzA6IE1lc3NhZ2UgMzAKQWxpY2UzMSAtPiBCb2IzMTogTWVzc2FnZSAzMQpBbGljZTMyIC0+IEJvYjMyOiBNZXNzYWdlIDMyCkFsaWNlMzMgLT4gQm9iMzM6IE1lc3NhZ2UgMzMKQWxpY2UzNCAtPiBCb2IzNDogTWVzc2FnZSAzNApBbGljZTM1IC0+IEJvYjM1OiBNZXNzYWdlIDM1CkFsaWNlMzYgLT4gQm9iMzY6IE1lc3NhZ2UgMzYKQWxpY2UzNyAtPiBCb2IzNzogTWVzc2FnZSAzNwpBbGljZTM4IC0+IEJvYjM4OiBNZXNzYWdlIDM4CkFsaWNlMzkgLT4gQm9iMzk6IE1lc3NhZ2UgMzkKQWxpY2U0MCAtPiBCb2I0MDogTWVzc2FnZSA0MApBbGljZTQxIC0+IEJvYjQxOiBNZXNzYWdlIDQxCkFsaWNlNDIgLT4gQm9iNDI6IE1lc3NhZ2UgNDIKQWxpY2U0MyAtPiBCb2I0MzogTWVzc2FnZSA0MwpBbGljZTQ0IC0+IEJvYjQ0OiBNZXNzYWdlIDQ0CkFsaWNlNDUgLT4gQm9iNDU6IE1lc3NhZ2UgNDUKQWxpY2U0NiAtPiBCb2I0NjogTWVzc2FnZSA0NgpBbGljZTQ3IC0+IEJvYjQ3OiBNZXNzYWdlIDQ3CkFsaWNlNDggLT4gQm9iNDg6IE1lc3NhZ2UgNDgKQWxpY2U0OSAtPiBCb2I0OTogTWVzc2FnZSA0OQpAZW5kdW1s"
+      >
+        <div class="plantuml-loading">Rendering PlantUML diagram…</div>
+        <div class="plantuml-error-fallback" style="display: none;">
+          <div class="diagram-error plantuml-error">
+            <strong>PlantUML Diagram Error:</strong>
+            Failed to load diagram from PlantUML server
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../../media/scripts/plantuml-init.js"></script>
+  </body>
+</html>
