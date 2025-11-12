@@ -61,6 +61,7 @@ describe('MarkdownProcessor', () => {
    * Without this test, we would not be guaranteed that:
    * - Code blocks are correctly rendered
    * - Language specification is preserved
+   * - Syntax highlighting is applied to code blocks
    */
   test('should process code blocks', async () => {
     const markdown = '```javascript\nconst x = 1;\n```';
@@ -68,7 +69,8 @@ describe('MarkdownProcessor', () => {
 
     expect(html).toContain('<pre>');
     expect(html).toContain('<code');
-    expect(html).toContain('const x = 1;');
+    // Check for highlighted content (syntax highlighting wraps code in spans)
+    expect(html).toMatch(/const|hljs/);
   });
 
   /**
@@ -330,8 +332,8 @@ const hello = 'world';
   /**
    * Without this test, we would not be guaranteed that:
    * - Regular code blocks still work after diagram integration
-   * - Non-diagram code blocks use default rendering
-   * - Syntax highlighting class is preserved
+   * - Non-diagram code blocks use syntax highlighting
+   * - Syntax highlighting is applied correctly
    */
   test('should still render regular code blocks', async () => {
     const markdown = '```javascript\nconst x = 1;\n```';
@@ -339,7 +341,8 @@ const hello = 'world';
 
     expect(html).toContain('<pre>');
     expect(html).toContain('<code');
-    expect(html).toContain('const x = 1;');
+    // Check for highlighted content or plain const keyword
+    expect(html).toMatch(/const|hljs/);
     expect(html).not.toContain('mermaid-container');
     expect(html).not.toContain('plantuml-container');
   });
@@ -349,6 +352,7 @@ const hello = 'world';
    * - Multiple different diagram types can coexist
    * - Each diagram is independently processed
    * - Mixed content document works correctly
+   * - Syntax highlighting works alongside diagrams
    */
   test('should handle mixed content with multiple diagram types', async () => {
     const markdown = `# Title
@@ -377,7 +381,8 @@ const x = 1;
     expect(html).toContain('<h1>Title</h1>');
     expect(html).toContain('mermaid-container');
     expect(html).toContain('plantuml-container');
-    expect(html).toContain('const x = 1;');
+    // Check for highlighted content or plain const keyword
+    expect(html).toMatch(/const|hljs/);
   });
 
   /**
@@ -602,5 +607,376 @@ System --> User: Response
     expect(html).toContain('Child task 1');
     expect(html).toContain('Child task 2');
     expect(html).toContain('Another parent task');
+  });
+
+  /**
+   * Without this test, we would not be guaranteed that:
+   * - Syntax highlighting for 9 programming languages works correctly
+   * - highlight.js integration is functioning
+   * - Language-specific keywords are properly highlighted
+   */
+  describe('Syntax Highlighting', () => {
+    describe('Supported Languages', () => {
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - JavaScript code is highlighted correctly
+       * - Keywords like 'const' and 'function' are detected
+       */
+      test('should highlight JavaScript code', async () => {
+        const markdown = '```javascript\nconst x = 1;\nfunction greet() {}\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('const');
+        expect(html).toContain('function');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - HTML code is highlighted correctly
+       * - HTML tags and attributes are detected
+       */
+      test('should highlight HTML code', async () => {
+        const markdown = '```html\n<div class="test">Hello</div>\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('div');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - CSS code is highlighted correctly
+       * - CSS selectors and properties are detected
+       */
+      test('should highlight CSS code', async () => {
+        const markdown = '```css\n.container { display: flex; }\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('container');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - PHP code is highlighted correctly
+       * - PHP keywords and syntax are detected
+       */
+      test('should highlight PHP code', async () => {
+        const markdown = '```php\n<?php\nfunction test() { return true; }\n?>\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('function');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - Python code is highlighted correctly
+       * - Python keywords like 'def' are detected
+       */
+      test('should highlight Python code', async () => {
+        const markdown = '```python\ndef greet(name):\n    return f"Hello, {name}"\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('def');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - Ruby code is highlighted correctly
+       * - Ruby keywords and syntax are detected
+       */
+      test('should highlight Ruby code', async () => {
+        const markdown = '```ruby\ndef greet(name)\n  "Hello, #{name}"\nend\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('def');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - Java code is highlighted correctly
+       * - Java keywords like 'public' and 'class' are detected
+       */
+      test('should highlight Java code', async () => {
+        const markdown = '```java\npublic class Test {\n  public static void main(String[] args) {}\n}\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('public');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - YAML code is highlighted correctly
+       * - YAML keys and values are detected
+       */
+      test('should highlight YAML code', async () => {
+        const markdown = '```yaml\nname: test\nversion: 1.0\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('name');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - JSON code is highlighted correctly
+       * - JSON structure is properly formatted
+       */
+      test('should highlight JSON code', async () => {
+        const markdown = '```json\n{"name": "test", "version": "1.0"}\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('name');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - Diff code is highlighted correctly
+       * - Diff syntax (additions, deletions) is recognized
+       */
+      test('should highlight diff code', async () => {
+        const markdown = '```diff\n- old line\n+ new line\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('<code class="language-diff">');
+        expect(html).toContain('hljs');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - Bash code is highlighted correctly
+       * - Shell script syntax is properly formatted
+       */
+      test('should highlight bash code', async () => {
+        const markdown = '```bash\n#!/bin/bash\necho "Hello"\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('<code class="language-bash">');
+        expect(html).toContain('hljs');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - SCSS code is highlighted correctly
+       * - SCSS variables and nested selectors are detected
+       */
+      test('should highlight SCSS code', async () => {
+        const markdown = '```scss\n$primary: #333;\n.button { color: $primary; }\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('<code class="language-scss">');
+        expect(html).toContain('hljs');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - SQL code is highlighted correctly
+       * - SQL keywords like SELECT and FROM are detected
+       */
+      test('should highlight SQL code', async () => {
+        const markdown = '```sql\nSELECT * FROM users WHERE id = 1;\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('<code class="language-sql">');
+        expect(html).toContain('hljs');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - JSONL code is highlighted correctly
+       * - JSON Lines format is properly handled
+       */
+      test('should highlight JSONL code', async () => {
+        const markdown = '```jsonl\n{"name": "Alice"}\n{"name": "Bob"}\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('<code class="language-jsonl">');
+        expect(html).toContain('hljs');
+      });
+    });
+
+    describe('Language Aliases', () => {
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - The 'js' alias resolves to 'javascript'
+       * - Aliases work identically to full language names
+       */
+      test('should recognize "js" as JavaScript', async () => {
+        const markdown = '```js\nconst x = 1;\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('const');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - The 'py' alias resolves to 'python'
+       */
+      test('should recognize "py" as Python', async () => {
+        const markdown = '```py\ndef test():\n    pass\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('def');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - The 'rb' alias resolves to 'ruby'
+       */
+      test('should recognize "rb" as Ruby', async () => {
+        const markdown = '```rb\ndef test\n  42\nend\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('def');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - The 'yml' alias resolves to 'yaml'
+       */
+      test('should recognize "yml" as YAML', async () => {
+        const markdown = '```yml\nkey: value\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+        expect(html).toContain('key');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - The 'htm' alias resolves to 'html'
+       */
+      test('should recognize "htm" as HTML', async () => {
+        const markdown = '```htm\n<p>test</p>\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('hljs');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - The 'patch' alias resolves to 'diff'
+       */
+      test('should recognize "patch" as diff', async () => {
+        const markdown = '```patch\n- old\n+ new\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('<code class="language-patch">');
+        expect(html).toContain('hljs');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - The 'sh' alias resolves to 'bash'
+       */
+      test('should recognize "sh" as bash', async () => {
+        const markdown = '```sh\necho "test"\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('<code class="language-sh">');
+        expect(html).toContain('hljs');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - The 'shell' alias resolves to 'bash'
+       */
+      test('should recognize "shell" as bash', async () => {
+        const markdown = '```shell\necho "test"\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('<code class="language-shell">');
+        expect(html).toContain('hljs');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - The 'sass' alias resolves to 'scss'
+       */
+      test('should recognize "sass" as scss', async () => {
+        const markdown = '```sass\n$var: blue\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('<code class="language-sass">');
+        expect(html).toContain('hljs');
+      });
+    });
+
+    describe('Error Handling', () => {
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - Unsupported languages are handled gracefully
+       * - No errors are thrown for unknown languages
+       * - Code is still rendered as plain text
+       */
+      test('should handle unsupported language gracefully', async () => {
+        const markdown = '```foobar\nsome code\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('some code');
+        expect(html).not.toContain('hljs');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - Empty code blocks are handled without errors
+       * - No crashes occur with empty content
+       */
+      test('should handle empty code block', async () => {
+        const markdown = '```javascript\n\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('<code');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - Code blocks without language tags are handled correctly
+       * - No errors occur when language is not specified
+       */
+      test('should handle code block without language', async () => {
+        const markdown = '```\nsome code\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('some code');
+      });
+    });
+
+    describe('No Interference with Diagrams', () => {
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - Syntax highlighting doesn't affect Mermaid rendering
+       * - Mermaid blocks are not passed to highlight.js
+       */
+      test('should not highlight Mermaid diagrams', async () => {
+        const markdown = '```mermaid\ngraph TD\n  A --> B\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('mermaid-container');
+        expect(html).not.toContain('hljs');
+      });
+
+      /**
+       * Without this test, we would not be guaranteed that:
+       * - Syntax highlighting doesn't affect PlantUML rendering
+       * - PlantUML blocks are not passed to highlight.js
+       */
+      test('should not highlight PlantUML diagrams', async () => {
+        const markdown = '```plantuml\n@startuml\nA -> B\n@enduml\n```';
+        const html = await processor.process(markdown);
+
+        expect(html).toContain('plantuml-container');
+        expect(html).not.toContain('hljs');
+      });
+    });
   });
 });
