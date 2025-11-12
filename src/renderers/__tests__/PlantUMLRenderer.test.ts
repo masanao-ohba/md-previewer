@@ -354,8 +354,10 @@ describe('PlantUMLRenderer', () => {
    * - selectRenderingMode() returns 'online' for small diagrams (< 40 lines)
    * - selectRenderingMode() returns 'local' for large diagrams (>= 40 lines)
    * - Threshold-based branching works correctly
+   *
+   * Note: This method is deprecated but kept for testing backward compatibility.
    */
-  test('should select online mode for small diagrams', () => {
+  test('should select online mode for small diagrams (deprecated behavior)', () => {
     const selector = (PlantUMLRenderer as any).selectRenderingMode;
 
     expect(selector(1)).toBe('online');
@@ -363,13 +365,55 @@ describe('PlantUMLRenderer', () => {
     expect(selector(39)).toBe('online');  // Just below threshold
   });
 
-  test('should select local mode for large diagrams', () => {
+  test('should select local mode for large diagrams (deprecated behavior)', () => {
     const selector = (PlantUMLRenderer as any).selectRenderingMode;
 
     expect(selector(40)).toBe('local');   // At threshold
     expect(selector(50)).toBe('local');
     expect(selector(100)).toBe('local');
     expect(selector(412)).toBe('local');  // User's actual test case
+  });
+
+  /**
+   * Without this test, we would not be guaranteed that:
+   * - render() defaults to online mode when no mode is specified
+   * - Large diagrams (>= 40 lines) use online mode by default
+   * - The new default behavior works correctly
+   */
+  test('should default to online mode for all diagram sizes', async () => {
+    const smallContent = '@startuml\nAlice -> Bob\n@enduml';
+    const largeContent = '@startuml\n' + Array.from({ length: 100 }, (_, i) => `Line${i} -> Line${i + 1}`).join('\n') + '\n@enduml';
+
+    // Small diagram without mode specified
+    const smallHtml = await PlantUMLRenderer.render(smallContent);
+    expect(smallHtml).toContain('src="https://www.plantuml.com/plantuml/svg/');
+
+    // Large diagram without mode specified - should also use online mode now
+    const largeHtml = await PlantUMLRenderer.render(largeContent);
+    expect(largeHtml).toContain('src="https://www.plantuml.com/plantuml/svg/');
+    expect(largeHtml).not.toContain('Diagram too large for online rendering');
+  });
+
+  /**
+   * Without this test, we would not be guaranteed that:
+   * - Explicit 'local' mode still works
+   * - Users can override the default online mode
+   */
+  test('should use local mode when explicitly specified', async () => {
+    const content = '@startuml\nAlice -> Bob\n@enduml';
+
+    // Mock Java detector to avoid actual Java installation requirement
+    const { JavaDetector } = await import('../../utils/JavaDetector');
+    const originalIsJavaInstalled = JavaDetector.isJavaInstalled;
+    JavaDetector.isJavaInstalled = jest.fn().mockResolvedValue(false);
+
+    const html = await PlantUMLRenderer.render(content, 'local', '/path/to/plantuml.jar');
+
+    // Should show Java required error since Java is not installed
+    expect(html).toContain('PlantUML Diagram Error');
+
+    // Restore original method
+    JavaDetector.isJavaInstalled = originalIsJavaInstalled;
   });
 
   /**
@@ -388,6 +432,75 @@ describe('PlantUMLRenderer', () => {
     expect(html).toContain('Install Java for local rendering:');
     expect(html).toContain('https://java.com/download');
     expect(html).toContain('Or reduce diagram to less than 40 lines');
+    expect(html).toContain('View diagram source');
+  });
+
+  /**
+   * Without this test, we would not be guaranteed that:
+   * - Very large diagrams that exceed URL length threshold are detected
+   * - URL too long error message is shown
+   * - Error includes specific URL length information
+   * - Error provides actionable guidance for local mode setup
+   */
+  test('should show URL too long error for very large diagrams', () => {
+    // Create a diagram large enough to exceed 2000 character URL threshold
+    // Need many objects with long descriptions to exceed the threshold
+    // DEFLATE compression is very effective, so we need a lot of content
+    const largeObjects = Array.from({ length: 300 }, (_, i) =>
+      `object "VeryLongObjectNameWithManyCharacters${i}" as OBJ${i} {\n  propertyWithLongName${i}\n  methodWithLongName${i}()\n  anotherPropertyWithVeryLongName${i}\n  anotherMethodWithVeryLongName${i}()\n}`
+    ).join('\n\n');
+
+    const content = `@startuml\n${largeObjects}\n@enduml`;
+    const html = PlantUMLRenderer.renderOnline(content);
+
+    expect(html).toContain('PlantUML Diagram Too Large');
+    expect(html).toContain('Diagram too large for online rendering');
+    expect(html).toContain('Diagram size:');
+    expect(html).toContain('lines');
+    expect(html).toContain('Generated URL:');
+    expect(html).toContain('characters');
+    expect(html).toContain('exceeds 2000 character limit');
+    expect(html).toContain('Install Java for local rendering');
+    expect(html).toContain('https://java.com/download');
+    expect(html).toContain('https://plantuml.com/download');
+    expect(html).toContain('Configure PlantUML JAR path in settings');
+    expect(html).toContain('reduce the diagram complexity');
+  });
+
+  /**
+   * Without this test, we would not be guaranteed that:
+   * - Small diagrams still use GET method (normal URL rendering)
+   * - URL length check doesn't affect normal-sized diagrams
+   * - Threshold is correctly applied
+   */
+  test('should use GET method for diagrams under URL length threshold', () => {
+    const normalContent = '@startuml\nAlice -> Bob: Hello\nBob -> Charlie: Hi\n@enduml';
+    const html = PlantUMLRenderer.renderOnline(normalContent);
+
+    // Should render normally with img tag, not error
+    expect(html).toContain('<img');
+    expect(html).toContain('src="https://www.plantuml.com/plantuml/svg/');
+    expect(html).not.toContain('PlantUML Diagram Too Large');
+    expect(html).not.toContain('URL too long');
+  });
+
+  /**
+   * Without this test, we would not be guaranteed that:
+   * - renderUrlTooLongError() formats error message correctly
+   * - Error includes line count and URL length
+   * - Error provides complete setup instructions
+   */
+  test('should render URL too long error with detailed information', () => {
+    const errorRenderer = (PlantUMLRenderer as any).renderUrlTooLongError.bind(PlantUMLRenderer);
+    const html = errorRenderer(537, 5000, '@startuml\n...\n@enduml');
+
+    expect(html).toContain('PlantUML Diagram Too Large');
+    expect(html).toContain('Diagram size: 537 lines');
+    expect(html).toContain('Generated URL: 5000 characters');
+    expect(html).toContain('exceeds 2000 character limit');
+    expect(html).toContain('Download Java:');
+    expect(html).toContain('Download PlantUML JAR:');
+    expect(html).toContain('Configure PlantUML JAR path in settings');
     expect(html).toContain('View diagram source');
   });
 });

@@ -30,11 +30,32 @@ export class MermaidRenderer {
     // Escape HTML to prevent XSS
     const escapedContent = this.escapeHtml(content);
 
+    // Escape for data attribute (double quotes need extra escaping)
+    const escapedForAttribute = escapedContent.replace(/"/g, '&quot;');
+
+    // Copy button HTML (same structure as code blocks)
+    const copyButtonHtml = `
+    <button class="copy-code-button"
+            aria-label="Copy diagram source code"
+            title="Copy diagram source"
+            data-diagram-source="${escapedForAttribute}">
+      <svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5.75 4.75H10.25V1.75H5.75V4.75ZM4.5 1.75C4.5 1.05964 5.05964 0.5 5.75 0.5H10.25C10.9404 0.5 11.5 1.05964 11.5 1.75V4.75H13.25C13.9404 4.75 14.5 5.30964 14.5 6V13.25C14.5 13.9404 13.9404 14.5 13.25 14.5H2.75C2.05964 14.5 1.5 13.9404 1.5 13.25V6C1.5 5.30964 2.05964 4.75 2.75 4.75H4.5V1.75ZM2.75 6V13.25H13.25V6H2.75Z" fill="currentColor"/>
+      </svg>
+      <span class="button-text">Copy</span>
+      <span class="button-feedback" role="status" aria-live="polite"></span>
+    </button>
+  `.trim();
+
     // Return HTML container that will be processed by mermaid.js
     // The pre element is used as a data carrier, and mermaid.js will replace it
     // The diagram-clickable class enables modal zoom on click
-    return `<div class="diagram-clickable mermaid-container" data-diagram-id="${diagramId}" data-diagram-type="mermaid">
-  <pre class="mermaid" id="${diagramId}">${escapedContent}</pre>
+    // The diagram-wrapper wraps the diagram with copy button
+    return `<div class="diagram-wrapper">
+  ${copyButtonHtml}
+  <div class="diagram-clickable mermaid-container" data-diagram-id="${diagramId}" data-diagram-type="mermaid">
+    <pre class="mermaid" id="${diagramId}">${escapedContent}</pre>
+  </div>
 </div>`;
   }
 

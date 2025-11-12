@@ -358,3 +358,20 @@ hue-6-2: #c18401
 #modal-diagram-container .copy-code-button {
   display: none !important;
 }
+
+/* === Diagram Wrapper (same positioning as code blocks) === */
+
+.diagram-wrapper {
+  position: relative;
+  margin: 16px 0;
+}
+
+/* Copy button for diagrams inherits all styles from .copy-code-button */
+.diagram-wrapper .copy-code-button {
+  /* Inherits positioning, styling, and transitions from .copy-code-button above */
+}
+
+/* Show button on hover for diagrams */
+.diagram-wrapper:hover .copy-code-button {
+  opacity: 1;
+}

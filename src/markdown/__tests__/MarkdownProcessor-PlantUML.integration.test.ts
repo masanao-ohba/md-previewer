@@ -229,5 +229,45 @@ Alice -> Bob
 
       expect(html).toContain('<img');
     });
+
+    test('should render large diagrams (>40 lines) using online mode by default', async () => {
+      // Create a diagram with 100 lines (well above the old 40-line threshold)
+      const lines = Array.from({ length: 100 }, (_, i) => `P${i} -> P${i + 1}: Message${i}`);
+      const markdown = `\`\`\`plantuml
+@startuml
+${lines.join('\n')}
+@enduml
+\`\`\``;
+
+      const html = await processor.process(markdown);
+
+      // Should use online mode (not Java/local mode)
+      expect(html).toContain('src="https://www.plantuml.com/plantuml/svg/');
+      expect(html).toContain('<img');
+
+      // Should NOT show Java required error
+      expect(html).not.toContain('Diagram too large for online rendering');
+      expect(html).not.toContain('Install Java for local rendering');
+    });
+
+    test('should render very large diagrams (>400 lines) using online mode by default', async () => {
+      // Create a diagram with 410 lines (matching user's real-world test case)
+      const lines = Array.from({ length: 410 }, (_, i) => `Line${i}`);
+      const markdown = `\`\`\`plantuml
+@startuml
+${lines.join('\n')}
+@enduml
+\`\`\``;
+
+      const html = await processor.process(markdown);
+
+      // Should use online mode even for very large diagrams
+      expect(html).toContain('src="https://www.plantuml.com/plantuml/svg/');
+      expect(html).toContain('<img');
+
+      // Should NOT show error about diagram being too large
+      expect(html).not.toContain('Diagram too large');
+      expect(html).not.toContain('Install Java');
+    });
   });
 });
