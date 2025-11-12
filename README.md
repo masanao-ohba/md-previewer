@@ -12,6 +12,22 @@ A powerful VSCode extension for Markdown preview with advanced Mermaid and Plant
 - **Side-by-Side Display**: Open preview alongside the editor
 - **Syntax Highlighting**: Beautiful code block rendering
 
+#### Supported Code Languages
+- JavaScript (`javascript`, `js`)
+- HTML (`html`, `htm`)
+- CSS (`css`)
+- PHP (`php`)
+- Python (`python`, `py`)
+- Ruby (`ruby`, `rb`)
+- Java (`java`)
+- YAML (`yaml`, `yml`)
+- JSON (`json`)
+- JSON Lines (`jsonl`)
+- Diff (`diff`, `patch`)
+- Bash (`bash`, `sh`, `shell`)
+- SCSS (`scss`, `sass`)
+- SQL (`sql`)
+
 ### 📊 Diagram Support
 
 #### Mermaid
