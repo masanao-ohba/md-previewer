@@ -26,6 +26,12 @@ node_modules/@typescript-eslint/**
 node_modules/prettier/**
 node_modules/vsce/**
 node_modules/@vscode/test-electron/**
+node_modules/@playwright/**
+node_modules/playwright/**
+node_modules/playwright-core/**
+node_modules/puppeteer/**
+node_modules/@puppeteer/**
+node_modules/jsdom/**
 
 # CRITICAL: Runtime dependencies MUST be included in VSIX
 # DO NOT add these to exclusion list:
@@ -40,6 +46,12 @@ node_modules/@vscode/test-electron/**
 # Test files
 test-samples/**
 coverage/**
+tests/**
+scripts/**
+playwright.config.ts
+*.spec.ts
+*.test.ts
+__tests__/**
 
 # Documentation (development-only)
 PHASE*.md
@@ -54,3 +66,10 @@ test-*.png
 *.log
 console.txt
 chatgpt.txt
+*.html
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+test-*.html
+manual-test-*.html
