@@ -149,6 +149,13 @@ HTTP method used when calling the PlantUML server. Use **GET** for classic URL-b
 
 Options: `get`, `post`
 
+#### PlantUML Local Fallback Threshold (auto mode)
+Line threshold that triggers the automatic switch to local rendering when using GET requests. Diagrams with a line count greater than or equal to this value will use local rendering unless POST mode is enabled.
+
+```json
+"markdownPreviewEnhanced.plantuml.localFallbackLineThreshold": 40
+```
+
 #### PlantUML Server (for online mode)
 PlantUML server URL
 

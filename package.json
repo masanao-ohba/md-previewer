@@ -124,6 +124,12 @@
           ],
           "description": "HTTP method used when contacting the PlantUML server"
         },
+        "markdownPreviewEnhanced.plantuml.localFallbackLineThreshold": {
+          "type": "number",
+          "default": 40,
+          "minimum": 1,
+          "description": "Line threshold for switching PlantUML GET requests to local rendering in auto mode"
+        },
         "markdownPreviewEnhanced.plantuml.server": {
           "type": "string",
           "default": "https://www.plantuml.com/plantuml/svg/",

@@ -9,6 +9,7 @@ const defaultConfiguration = {
   'plantuml.mode': 'online',
   'plantuml.jarPath': '',
   'plantuml.requestType': 'get',
+  'plantuml.localFallbackLineThreshold': 40,
   'plantuml.server': 'https://www.plantuml.com/plantuml/svg/',
   'preview.theme': 'github-light',
 } as const;

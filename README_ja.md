@@ -147,6 +147,13 @@ PlantUMLサーバーへアクセスする際のHTTPメソッドを指定しま�
 
 オプション: `get`, `post`
 
+#### PlantUML自動ローカル切替閾値（自動モード）
+自動モードでGETリクエストを使用する場合にローカル描画へ切り替える行数の閾値です。この値以上の行数を持つダイアグラムは、POSTモードが有効でない限りローカル描画に切り替わります。
+
+```json
+"markdownPreviewEnhanced.plantuml.localFallbackLineThreshold": 40
+```
+
 #### PlantUMLサーバー（オンラインモード用）
 PlantUMLサーバーのURL
 

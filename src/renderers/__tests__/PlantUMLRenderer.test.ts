@@ -374,25 +374,25 @@ Alice -> Bob: Hello
   test('should select online mode for small diagrams', () => {
     const selector = (PlantUMLRenderer as any).selectRenderingMode;
 
-    expect(selector(1, 'get')).toBe('online');
-    expect(selector(10, 'get')).toBe('online');
-    expect(selector(39, 'get')).toBe('online'); // Just below threshold
+    expect(selector(1, 'get', 40)).toBe('online');
+    expect(selector(10, 'get', 40)).toBe('online');
+    expect(selector(39, 'get', 40)).toBe('online'); // Just below threshold
   });
 
   test('should select local mode for large diagrams', () => {
     const selector = (PlantUMLRenderer as any).selectRenderingMode;
 
-    expect(selector(40, 'get')).toBe('local'); // At threshold
-    expect(selector(50, 'get')).toBe('local');
-    expect(selector(100, 'get')).toBe('local');
-    expect(selector(412, 'get')).toBe('local'); // User's actual test case
+    expect(selector(40, 'get', 40)).toBe('local'); // At threshold
+    expect(selector(50, 'get', 40)).toBe('local');
+    expect(selector(100, 'get', 40)).toBe('local');
+    expect(selector(412, 'get', 40)).toBe('local'); // User's actual test case
   });
 
   test('should prefer online mode for large diagrams when POST mode is configured', () => {
     const selector = (PlantUMLRenderer as any).selectRenderingMode;
 
-    expect(selector(120, 'post')).toBe('online');
-    expect(selector(412, 'post')).toBe('online');
+    expect(selector(120, 'post', 40)).toBe('online');
+    expect(selector(412, 'post', 40)).toBe('online');
   });
 
   test('auto mode keeps online rendering for large diagrams when POST is configured', async () => {
@@ -408,6 +408,18 @@ Alice -> Bob: Hello
     expect(html).not.toContain('PlantUML JAR path is not configured');
   });
 
+  test('auto mode honours custom fallback threshold for GET requests', async () => {
+    testConfiguration.__set('plantuml.localFallbackLineThreshold', 120);
+
+    const largeDiagramLines = Array.from({ length: 80 }, (_, i) => `User${i} -> System${i}: Call ${i}`).join('\n');
+    const content = `@startuml\n${largeDiagramLines}\n@enduml`;
+
+    const html = await PlantUMLRenderer.render(content);
+
+    expect(html).toContain('<img');
+    expect(html).not.toContain('plantuml-pending');
+  });
+
   /**
    * Without this test, we would not be guaranteed that:
    * - renderJavaRequiredError() shows line count in error message
@@ -417,7 +429,7 @@ Alice -> Bob: Hello
   test('should render Java required error with line count and download link', () => {
     // Use bind to maintain 'this' context when calling private method
     const errorRenderer = (PlantUMLRenderer as any).renderJavaRequiredError.bind(PlantUMLRenderer);
-    const html = errorRenderer(76, '@startuml\n...\n@enduml');
+    const html = errorRenderer(76, 40, '@startuml\n...\n@enduml');
 
     expect(html).toContain('diagram-error');
     expect(html).toContain('Diagram too large for online rendering (76 lines)');
@@ -425,5 +437,12 @@ Alice -> Bob: Hello
     expect(html).toContain('https://java.com/download');
     expect(html).toContain('Or reduce diagram to less than 40 lines');
     expect(html).toContain('View diagram source');
+  });
+
+  test('should render Java required error with custom threshold', () => {
+    const errorRenderer = (PlantUMLRenderer as any).renderJavaRequiredError.bind(PlantUMLRenderer);
+    const html = errorRenderer(150, 120, '@startuml\n...\n@enduml');
+
+    expect(html).toContain('Or reduce diagram to less than 120 lines');
   });
 });

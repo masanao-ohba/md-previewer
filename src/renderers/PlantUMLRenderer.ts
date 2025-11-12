@@ -20,7 +20,7 @@ export class PlantUMLRenderer {
    * Render a PlantUML diagram block.
    *
    * Strategy 1 (Adaptive Rendering): Automatically selects rendering mode based on diagram size.
-   * Small diagrams (< 40 lines) use fast online mode; large diagrams use reliable local mode.
+   * Small diagrams below the configured threshold use fast online mode; large diagrams use reliable local mode.
    * This method routes to online or local rendering based on automatic size detection.
    * Each diagram is wrapped in an error-isolated container.
    *
@@ -45,6 +45,7 @@ export class PlantUMLRenderer {
       (config.get<string>('plantuml.requestType', 'get') || 'get').toLowerCase() === 'post'
         ? 'post'
         : 'get';
+    const fallbackThreshold = this.resolveLocalFallbackThreshold(config);
 
     try {
       // Strategy 1: Automatic mode selection based on diagram size
@@ -54,11 +55,11 @@ export class PlantUMLRenderer {
         const lineCount = this.detectDiagramSize(content);
 
         // Automatically select rendering mode based on size threshold
-        renderMode = this.selectRenderingMode(lineCount, requestType);
+        renderMode = this.selectRenderingMode(lineCount, requestType, fallbackThreshold);
       }
 
       if (renderMode === 'local') {
-        return await this.renderLocal(content, configuredJarPath);
+        return await this.renderLocal(content, configuredJarPath, fallbackThreshold);
       } else {
         return this.renderOnline(content);
       }
@@ -82,27 +83,44 @@ export class PlantUMLRenderer {
   }
 
   /**
+   * Resolve the configured line threshold for automatically switching to local rendering.
+   *
+   * Values smaller than 1 or invalid values fall back to the default of 40 lines.
+   */
+  private static resolveLocalFallbackThreshold(
+    config: vscode.WorkspaceConfiguration
+  ): number {
+    const configured = config.get<number>('plantuml.localFallbackLineThreshold', 40);
+
+    if (typeof configured !== 'number' || Number.isNaN(configured)) {
+      return 40;
+    }
+
+    const normalized = Math.max(1, Math.floor(configured));
+    return normalized;
+  }
+
+  /**
    * Select rendering mode based on diagram size.
    *
    * Strategy 1 implementation: Automatic mode selection using threshold-based branching.
-   * - Small diagrams (< 40 lines): Use online mode (fast, no dependencies)
-   * - Large diagrams (>= 40 lines): Use local mode (no URL limits, requires Java)
-   *
-   * ADAPTIVE_RENDERING_THRESHOLD = 40 lines (based on URL encoding limit of ~2KB)
+   * - Small diagrams below the configured threshold: Use online mode (fast, no dependencies)
+   * - Large diagrams (>= threshold): Use local mode (no URL limits, requires Java)
    *
    * @param lineCount - Number of lines in the diagram
+   * @param fallbackThreshold - Configured line threshold for GET requests
    * @returns Rendering mode ('online' or 'local')
    */
   private static selectRenderingMode(
     lineCount: number,
-    requestType: 'get' | 'post'
+    requestType: 'get' | 'post',
+    fallbackThreshold: number
   ): 'online' | 'local' {
     if (requestType === 'post') {
       return 'online';
     }
 
-    const ADAPTIVE_RENDERING_THRESHOLD = 40; // Strategy 1: Threshold for automatic fallback
-    return lineCount < ADAPTIVE_RENDERING_THRESHOLD ? 'online' : 'local';
+    return lineCount < fallbackThreshold ? 'online' : 'local';
   }
 
 
@@ -240,16 +258,21 @@ export class PlantUMLRenderer {
    *
    * @param content - PlantUML diagram source code
    * @param jarPath - Path to PlantUML JAR file
+   * @param fallbackThreshold - Configured line threshold for GET requests
    * @returns Promise resolving to HTML string with PlantUML SVG
    */
-  private static async renderLocal(content: string, jarPath: string): Promise<string> {
+  private static async renderLocal(
+    content: string,
+    jarPath: string,
+    fallbackThreshold: number
+  ): Promise<string> {
     // Validate prerequisites
     const javaInstalled = await JavaDetector.isJavaInstalled();
     const lineCount = this.detectDiagramSize(content);
 
     if (!javaInstalled) {
       // Strategy 1: Helpful error with line count and Java download link
-      return this.renderJavaRequiredError(lineCount, content);
+      return this.renderJavaRequiredError(lineCount, fallbackThreshold, content);
     }
 
     if (!jarPath || jarPath.trim() === '') {
@@ -408,7 +431,11 @@ export class PlantUMLRenderer {
    * @param content - Diagram source code
    * @returns HTML string with error message
    */
-  private static renderJavaRequiredError(lineCount: number, content?: string): string {
+  private static renderJavaRequiredError(
+    lineCount: number,
+    fallbackThreshold: number,
+    content?: string
+  ): string {
     const escapedContent = content ? this.escapeHtml(content) : '';
     const contentSection = content
       ? `<details>
@@ -427,7 +454,7 @@ export class PlantUMLRenderer {
   <p style="margin: 8px 0; color: #57606a;">
     <strong>Diagram too large for online rendering (${lineCount} lines).</strong><br/>
     Install Java for local rendering: <a href="https://java.com/download" target="_blank" style="color: #0078d4;">https://java.com/download</a><br/>
-    Or reduce diagram to less than 40 lines.
+    Or reduce diagram to less than ${fallbackThreshold} lines.
   </p>
   ${contentSection}
 </div>`;
