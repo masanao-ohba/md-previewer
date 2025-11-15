@@ -76,16 +76,14 @@ Bob --> Alice: Hi!
   - `ESC`: Close modal
 
 ### 🎨 Themes
-- **GitHub Light / Dark**: GitHub-style themes
 - **VS Code Light / Dark**: VS Code native themes
-- **High Contrast**: Accessibility-focused high contrast theme
 
 ## Installation
 
 ### From Visual Studio Marketplace
 1. Open VSCode
 2. Open Extensions view (`Ctrl+Shift+X` / `Cmd+Shift+X`)
-3. Search for "Markdown Preview Enhanced"
+3. Search for "MD Previewer"
 4. Click "Install"
 
 ### From VSIX File
@@ -100,7 +98,7 @@ code --install-extension markdown-preview-enhanced-0.1.0.vsix
 #### Method 1: Command Palette
 1. Open a Markdown file
 2. Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
-3. Select "Markdown Preview Enhanced: Open Preview"
+3. Select "Markdown Previewer: Open Preview"
 
 #### Method 2: Editor Title Bar
 With a Markdown file open, click the "Open Preview" icon in the editor title bar
@@ -113,7 +111,7 @@ With a Markdown file open, click the "Open Preview" icon in the editor title bar
 
 ## Configuration
 
-Customize via VSCode settings (`File > Preferences > Settings`), search for "Markdown Preview Enhanced".
+Customize via VSCode settings (`File > Preferences > Settings`), search for "Markdown Previewer".
 
 ### Main Settings
 
@@ -121,37 +119,37 @@ Customize via VSCode settings (`File > Preferences > Settings`), search for "Mar
 Debounce time for preview updates (milliseconds)
 
 ```json
-"markdownPreviewEnhanced.preview.debounceDelay": 300
+"markdownPreviewer.preview.debounceDelay": 300
 ```
 
 #### Default Zoom Level
 Default zoom level for preview (percentage)
 
 ```json
-"markdownPreviewEnhanced.preview.defaultZoom": 100
+"markdownPreviewer.preview.defaultZoom": 100
 ```
 
 #### Theme
 Preview panel theme
 
 ```json
-"markdownPreviewEnhanced.preview.theme": "github-light"
+"markdownPreviewer.preview.theme": "vscode-light"
 ```
 
-Options: `github-light`, `github-dark`, `vscode-light`, `vscode-dark`, `high-contrast`
+Options: `vscode-light`, `vscode-dark`
 
 #### Auto Preview
 Automatically open preview when opening Markdown files
 
 ```json
-"markdownPreviewEnhanced.preview.autoOpen": false
+"markdownPreviewer.preview.autoOpen": false
 ```
 
 #### PlantUML Mode
 PlantUML rendering mode
 
 ```json
-"markdownPreviewEnhanced.plantuml.mode": "online"
+"markdownPreviewer.plantuml.mode": "online"
 ```
 
 Options: `online`, `local`
@@ -160,14 +158,14 @@ Options: `online`, `local`
 Absolute path to PlantUML JAR file
 
 ```json
-"markdownPreviewEnhanced.plantuml.jarPath": "/path/to/plantuml.jar"
+"markdownPreviewer.plantuml.jarPath": "/path/to/plantuml.jar"
 ```
 
 #### PlantUML Server (for online mode)
 PlantUML server URL
 
 ```json
-"markdownPreviewEnhanced.plantuml.server": "https://www.plantuml.com/plantuml/svg/"
+"markdownPreviewer.plantuml.server": "https://www.plantuml.com/plantuml/svg/"
 ```
 
 ### PlantUML Local Mode Setup
@@ -185,8 +183,8 @@ To use local mode (optional):
 3. **VSCode Configuration**
    ```json
    {
-     "markdownPreviewEnhanced.plantuml.mode": "local",
-     "markdownPreviewEnhanced.plantuml.jarPath": "/Users/username/plantuml.jar"
+     "markdownPreviewer.plantuml.mode": "local",
+     "markdownPreviewer.plantuml.jarPath": "/Users/username/plantuml.jar"
    }
    ```
 

@@ -74,16 +74,14 @@ Bob --> Alice: Hi!
   - `ESC`: モーダルを閉じる
 
 ### 🎨 テーマ
-- **GitHub Light / Dark**: GitHubスタイルのテーマ
 - **VS Code Light / Dark**: VS Codeネイティブテーマ
-- **High Contrast**: アクセシビリティ対応の高コントラストテーマ
 
 ## インストール
 
 ### Visual Studio Marketplaceから
 1. VSCodeを開く
 2. 拡張機能ビュー（`Ctrl+Shift+X` / `Cmd+Shift+X`）を開く
-3. "Markdown Preview Enhanced" を検索
+3. "MD Previewer" を検索
 4. 「インストール」をクリック
 
 ### VSIXファイルから
@@ -98,7 +96,7 @@ code --install-extension markdown-preview-enhanced-0.1.0.vsix
 #### 方法1: コマンドパレット
 1. Markdownファイルを開く
 2. `Ctrl+Shift+P` / `Cmd+Shift+P` でコマンドパレットを開く
-3. "Markdown Preview Enhanced: Open Preview" を選択
+3. "Markdown Previewer: Open Preview" を選択
 
 #### 方法2: エディタータイトルバー
 Markdownファイルを開いた状態で、エディタータイトルバーの「プレビューを開く」アイコンをクリック
@@ -111,7 +109,7 @@ Markdownファイルを開いた状態で、エディタータイトルバーの
 
 ## 設定
 
-VSCodeの設定（`ファイル > 環境設定 > 設定`）から「Markdown Preview Enhanced」を検索してカスタマイズできます。
+VSCodeの設定（`ファイル > 環境設定 > 設定`）から「Markdown Previewer」を検索してカスタマイズできます。
 
 ### 主な設定項目
 
@@ -119,37 +117,37 @@ VSCodeの設定（`ファイル > 環境設定 > 設定`）から「Markdown Pre
 プレビュー更新のデバウンス時間（ミリ秒）
 
 ```json
-"markdownPreviewEnhanced.preview.debounceDelay": 300
+"markdownPreviewer.preview.debounceDelay": 300
 ```
 
 #### デフォルトズームレベル
 プレビューのデフォルトズームレベル（パーセント）
 
 ```json
-"markdownPreviewEnhanced.preview.defaultZoom": 100
+"markdownPreviewer.preview.defaultZoom": 100
 ```
 
 #### テーマ
 プレビューパネルのテーマ
 
 ```json
-"markdownPreviewEnhanced.preview.theme": "github-light"
+"markdownPreviewer.preview.theme": "vscode-light"
 ```
 
-オプション: `github-light`, `github-dark`, `vscode-light`, `vscode-dark`, `high-contrast`
+オプション: `vscode-light`, `vscode-dark`
 
 #### 自動プレビュー
 Markdownファイルを開いたときに自動的にプレビューを開く
 
 ```json
-"markdownPreviewEnhanced.preview.autoOpen": false
+"markdownPreviewer.preview.autoOpen": false
 ```
 
 #### PlantUMLモード
 PlantUMLレンダリングモード
 
 ```json
-"markdownPreviewEnhanced.plantuml.mode": "online"
+"markdownPreviewer.plantuml.mode": "online"
 ```
 
 オプション: `online`, `local`
@@ -158,14 +156,14 @@ PlantUMLレンダリングモード
 PlantUML JARファイルの絶対パス
 
 ```json
-"markdownPreviewEnhanced.plantuml.jarPath": "/path/to/plantuml.jar"
+"markdownPreviewer.plantuml.jarPath": "/path/to/plantuml.jar"
 ```
 
 #### PlantUMLサーバー（オンラインモード用）
 PlantUMLサーバーのURL
 
 ```json
-"markdownPreviewEnhanced.plantuml.server": "https://www.plantuml.com/plantuml/svg/"
+"markdownPreviewer.plantuml.server": "https://www.plantuml.com/plantuml/svg/"
 ```
 
 ### PlantUMLローカルモードのセットアップ
@@ -183,8 +181,8 @@ PlantUMLサーバーのURL
 3. **VSCode設定**
    ```json
    {
-     "markdownPreviewEnhanced.plantuml.mode": "local",
-     "markdownPreviewEnhanced.plantuml.jarPath": "/Users/username/plantuml.jar"
+     "markdownPreviewer.plantuml.mode": "local",
+     "markdownPreviewer.plantuml.jarPath": "/Users/username/plantuml.jar"
    }
    ```
 

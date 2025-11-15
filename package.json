@@ -2,7 +2,7 @@
   "name": "md-previewer",
   "displayName": "MD Previewer - Mermaid & PlantUML",
   "description": "Advanced Markdown preview with Mermaid and PlantUML diagram support",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "publisher": "MasanaoOhbaAzurePublisher",
   "icon": "media/images/icon.png",
   "repository": {
@@ -29,7 +29,7 @@
   "activationEvents": [
     "onLanguage:markdown"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
