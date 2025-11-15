@@ -6,12 +6,20 @@
       "type": "extensionHost",
       "request": "launch",
       "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}"
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionDevelopmentKind=workspace"
       ],
+      "env": {
+        "VSCODE_DEBUG_MODE": "true"
+      },
       "outFiles": [
         "${workspaceFolder}/out/**/*.js"
       ],
-      "preLaunchTask": "${defaultBuildTask}"
+      "preLaunchTask": "${defaultBuildTask}",
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/out/**/*.js",
+        "!**/node_modules/**"
+      ]
     },
     {
       "name": "Extension Tests",

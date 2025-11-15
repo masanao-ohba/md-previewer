@@ -2,6 +2,10 @@
 .vscode/**
 .vscode-test/**
 src/**
+out/**
+
+# Build configuration
+webpack.config.js
 
 # Development configuration files
 .gitignore
@@ -13,31 +17,13 @@ jest.config.js
 # Build artifacts
 **/*.map
 **/*.ts
-!out/**/*.js
 
-# Development-only dependencies (safe to exclude)
-node_modules/@types/**
-node_modules/@vscode/**
-node_modules/typescript/**
-node_modules/jest/**
-node_modules/ts-jest/**
-node_modules/eslint/**
-node_modules/@typescript-eslint/**
-node_modules/prettier/**
-node_modules/vsce/**
-node_modules/@vscode/test-electron/**
-node_modules/@playwright/**
-node_modules/playwright/**
-node_modules/playwright-core/**
-node_modules/puppeteer/**
-node_modules/@puppeteer/**
-node_modules/jsdom/**
+# Webpack bundles all dependencies into dist/extension.js
+# Therefore node_modules is not needed in VSIX
+node_modules/**
 
-# CRITICAL: Runtime dependencies MUST be included in VSIX
-# DO NOT add these to exclusion list:
-# - node_modules/markdown-it/** (required for Markdown parsing)
-# - node_modules/mermaid/** (required for diagram rendering)
-# - Any other packages listed in "dependencies" (not "devDependencies")
+# Include only the webpack bundle
+!dist/**
 
 # Project management
 .claude/**
@@ -73,3 +59,4 @@ chatgpt.txt
 !tsconfig.json
 test-*.html
 manual-test-*.html
+

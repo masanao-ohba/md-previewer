@@ -2,7 +2,7 @@
   "name": "md-previewer",
   "displayName": "MD Previewer - Mermaid & PlantUML",
   "description": "Advanced Markdown preview with Mermaid and PlantUML diagram support",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "publisher": "MasanaoOhbaAzurePublisher",
   "icon": "media/images/icon.png",
   "repository": {
@@ -33,68 +33,65 @@
   "contributes": {
     "commands": [
       {
-        "command": "markdownPreviewEnhanced.openPreview",
-        "title": "Markdown Preview Enhanced: Open Preview",
+        "command": "markdownPreviewer.openPreview",
+        "title": "Markdown Previewer: Open Preview",
         "icon": "$(open-preview)"
       },
       {
-        "command": "markdownPreviewEnhanced.openPreviewToSide",
-        "title": "Markdown Preview Enhanced: Open Preview to the Side",
+        "command": "markdownPreviewer.openPreviewToSide",
+        "title": "Markdown Previewer: Open Preview to the Side",
         "icon": "$(open-preview)"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "markdownPreviewEnhanced.openPreviewToSide",
+          "command": "markdownPreviewer.openPreviewToSide",
           "when": "editorLangId == markdown",
           "group": "navigation"
         }
       ],
       "commandPalette": [
         {
-          "command": "markdownPreviewEnhanced.openPreview",
+          "command": "markdownPreviewer.openPreview",
           "when": "editorLangId == markdown"
         },
         {
-          "command": "markdownPreviewEnhanced.openPreviewToSide",
+          "command": "markdownPreviewer.openPreviewToSide",
           "when": "editorLangId == markdown"
         }
       ]
     },
     "configuration": {
-      "title": "Markdown Preview Enhanced",
+      "title": "Markdown Previewer",
       "properties": {
-        "markdownPreviewEnhanced.preview.debounceDelay": {
+        "markdownPreviewer.preview.debounceDelay": {
           "type": "number",
           "default": 300,
           "description": "Delay in milliseconds before updating preview after text changes"
         },
-        "markdownPreviewEnhanced.preview.defaultZoom": {
+        "markdownPreviewer.preview.defaultZoom": {
           "type": "number",
           "default": 100,
           "minimum": 10,
           "maximum": 1000,
           "description": "Default zoom level for preview (percentage)"
         },
-        "markdownPreviewEnhanced.preview.theme": {
+        "markdownPreviewer.preview.theme": {
           "type": "string",
-          "default": "github-light",
+          "default": "vscode-light",
           "enum": [
-            "github-light",
-            "github-dark",
             "vscode-light",
-            "vscode-dark",
-            "high-contrast"
+            "vscode-dark"
           ],
           "description": "Theme for preview panel"
         },
-        "markdownPreviewEnhanced.preview.autoOpen": {
+        "markdownPreviewer.preview.autoOpen": {
           "type": "boolean",
           "default": false,
           "description": "Automatically open preview when opening a Markdown file"
         },
-        "markdownPreviewEnhanced.plantuml.mode": {
+        "markdownPreviewer.plantuml.mode": {
           "type": "string",
           "default": "online",
           "enum": [
@@ -107,12 +104,12 @@
           ],
           "description": "PlantUML rendering mode"
         },
-        "markdownPreviewEnhanced.plantuml.jarPath": {
+        "markdownPreviewer.plantuml.jarPath": {
           "type": "string",
           "default": "",
           "description": "Absolute path to PlantUML JAR file (required for local mode). Example: /Users/username/plantuml.jar"
         },
-        "markdownPreviewEnhanced.plantuml.server": {
+        "markdownPreviewer.plantuml.server": {
           "type": "string",
           "default": "https://www.plantuml.com/plantuml/svg/",
           "description": "PlantUML server URL for online mode"
@@ -121,8 +118,9 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run compile:production && node scripts/prepare-package.js",
     "compile": "tsc -p ./",
+    "compile:production": "webpack --mode production",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
@@ -132,8 +130,7 @@
     "test:modal-zoom": "node tests/e2e/modal-zoom-jsdom.js",
     "debug:modal-zoom": "npm run compile && node scripts/debug-modal-zoom.js",
     "format": "prettier --write \"src/**/*.ts\"",
-    "validate-vsix": "bash scripts/validate-vsix.sh",
-    "package": "npm run compile && vsce package && npm run validate-vsix"
+    "package": "vsce package && node scripts/restore-package.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
@@ -151,8 +148,11 @@
     "prettier": "^3.0.0",
     "puppeteer": "^24.29.1",
     "ts-jest": "^29.1.0",
+    "ts-loader": "^9.5.4",
     "typescript": "^5.2.0",
-    "vsce": "^2.15.0"
+    "vsce": "^2.15.0",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^6.0.1"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",

@@ -40,7 +40,7 @@ export class PlantUMLRenderer {
     }
 
     // Get configuration
-    const config = vscode.workspace.getConfiguration('markdownPreviewEnhanced');
+    const config = vscode.workspace.getConfiguration('markdownPreviewer');
     const configuredJarPath = jarPath || config.get<string>('plantuml.jarPath', '');
 
     try {

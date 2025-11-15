@@ -30,7 +30,7 @@ export class PreviewPanel {
     this.context = context;
 
     // Get debounce delay from configuration
-    const config = vscode.workspace.getConfiguration('markdownPreviewEnhanced');
+    const config = vscode.workspace.getConfiguration('markdownPreviewer');
     this.debounceDelay = config.get('preview.debounceDelay', 300);
 
     // Set initial content
@@ -154,7 +154,7 @@ export class PreviewPanel {
   private getWebviewHtml(contentHtml: string, document: vscode.TextDocument): string {
     void document;
 
-    const config = vscode.workspace.getConfiguration('markdownPreviewEnhanced');
+    const config = vscode.workspace.getConfiguration('markdownPreviewer');
     const themeName = config.get('preview.theme', 'github-light');
     const themeContent = ThemeManager.getThemeContent(this.context, themeName);
 

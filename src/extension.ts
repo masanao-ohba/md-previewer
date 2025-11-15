@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Register command: Open Preview
   const openPreviewCommand = vscode.commands.registerCommand(
-    'markdownPreviewEnhanced.openPreview',
+    'markdownPreviewer.openPreview',
     () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
@@ -33,7 +33,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Register command: Open Preview to the Side
   const openPreviewToSideCommand = vscode.commands.registerCommand(
-    'markdownPreviewEnhanced.openPreviewToSide',
+    'markdownPreviewer.openPreviewToSide',
     () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
@@ -65,7 +65,7 @@ export function activate(context: vscode.ExtensionContext): void {
   });
 
   // Auto-open preview if configured
-  if (vscode.workspace.getConfiguration('markdownPreviewEnhanced').get('preview.autoOpen')) {
+  if (vscode.workspace.getConfiguration('markdownPreviewer').get('preview.autoOpen')) {
     const editor = vscode.window.activeTextEditor;
     if (editor && editor.document.languageId === 'markdown') {
       openOrUpdatePreview(context, editor, vscode.ViewColumn.Beside);

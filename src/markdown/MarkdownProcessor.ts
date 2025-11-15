@@ -186,7 +186,7 @@ export class MarkdownProcessor {
         return MermaidRenderer.render(content);
       } else if (this.isPlantUMLBlock(info)) {
         // Read PlantUML configuration from settings
-        const config = vscode.workspace.getConfiguration('markdownPreviewEnhanced');
+        const config = vscode.workspace.getConfiguration('markdownPreviewer');
         const mode = config.get<'online' | 'local'>('plantuml.mode', 'online');
         const jarPath = config.get<string>('plantuml.jarPath', '');
 
