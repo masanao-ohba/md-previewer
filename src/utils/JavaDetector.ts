@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { exec, execSync } from 'child_process';
 import { promisify } from 'util';
 import * as fs from 'fs';
 
@@ -35,6 +35,39 @@ export class JavaDetector {
       // Cache the version string
       if (output) {
         this.javaVersionCache = output;
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.log('Java not found on system:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Check if Java is installed on the system (synchronous version).
+   *
+   * Executes 'java -version' command synchronously to verify Java installation.
+   * Caches the result to avoid repeated system calls.
+   *
+   * @returns true if Java is installed, false otherwise
+   */
+  public static isJavaInstalledSync(): boolean {
+    // Return cached result if available
+    if (this.javaVersionCache !== null) {
+      return true;
+    }
+
+    try {
+      const output = execSync('java -version', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+      // Java version outputs to stderr, so we need to check both stdout and stderr
+      // execSync with stdio: ['pipe', 'pipe', 'pipe'] will capture both
+
+      // Cache the version string
+      if (output || output === '') {
+        // Even if output is empty, the command succeeded (Java outputs to stderr)
+        this.javaVersionCache = output || 'installed';
         return true;
       }
 

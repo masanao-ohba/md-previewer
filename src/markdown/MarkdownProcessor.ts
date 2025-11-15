@@ -16,6 +16,7 @@ import diff from 'highlight.js/lib/languages/diff';
 import bash from 'highlight.js/lib/languages/bash';
 import scss from 'highlight.js/lib/languages/scss';
 import sql from 'highlight.js/lib/languages/sql';
+import * as vscode from 'vscode';
 
 /**
  * Supported languages for syntax highlighting.
@@ -184,8 +185,17 @@ export class MarkdownProcessor {
       if (this.isMermaidBlock(info)) {
         return MermaidRenderer.render(content);
       } else if (this.isPlantUMLBlock(info)) {
-        // PlantUML online mode is synchronous (uses URL-based rendering)
-        return PlantUMLRenderer.renderOnline(content);
+        // Read PlantUML configuration from settings
+        const config = vscode.workspace.getConfiguration('markdownPreviewEnhanced');
+        const mode = config.get<'online' | 'local'>('plantuml.mode', 'online');
+        const jarPath = config.get<string>('plantuml.jarPath', '');
+
+        // Call the appropriate renderer based on mode
+        if (mode === 'local') {
+          return PlantUMLRenderer.renderLocal(content, jarPath);
+        } else {
+          return PlantUMLRenderer.renderOnline(content);
+        }
       } else {
         // Default code block rendering
         return this.defaultFenceRenderer(tokens, idx, options, env, self);
