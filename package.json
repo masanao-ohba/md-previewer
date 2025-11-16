@@ -2,7 +2,7 @@
   "name": "md-previewer",
   "displayName": "MD Previewer - Mermaid & PlantUML",
   "description": "Advanced Markdown preview with Mermaid and PlantUML diagram support",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "MasanaoOhbaAzurePublisher",
   "icon": "media/images/icon.png",
   "repository": {
@@ -113,6 +113,13 @@
           "type": "string",
           "default": "https://www.plantuml.com/plantuml/svg/",
           "description": "PlantUML server URL for online mode"
+        },
+        "markdownPreviewer.plantuml.serverPort": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "Port for local PlantUML server (0 = auto-detect available port, default: 18000-18100 range)"
         }
       }
     }
@@ -121,7 +128,9 @@
     "vscode:prepublish": "npm run compile:production && node scripts/prepare-package.js",
     "compile": "tsc -p ./",
     "compile:production": "webpack --mode production",
-    "watch": "tsc -watch -p ./",
+    "compile:dev": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
+    "watch:tsc": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "jest",

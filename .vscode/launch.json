@@ -13,11 +13,11 @@
         "VSCODE_DEBUG_MODE": "true"
       },
       "outFiles": [
-        "${workspaceFolder}/out/**/*.js"
+        "${workspaceFolder}/dist/**/*.js"
       ],
       "preLaunchTask": "${defaultBuildTask}",
       "resolveSourceMapLocations": [
-        "${workspaceFolder}/out/**/*.js",
+        "${workspaceFolder}/dist/**/*.js",
         "!**/node_modules/**"
       ]
     },

@@ -3,16 +3,18 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "compile",
+      "script": "compile:dev",
+      "label": "webpack-dev-build",
       "group": "build",
       "presentation": {
         "reveal": "silent"
       },
-      "problemMatcher": "$tsc"
+      "problemMatcher": []
     },
     {
       "type": "npm",
       "script": "watch",
+      "label": "webpack-watch",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -21,7 +23,14 @@
       "presentation": {
         "reveal": "silent"
       },
-      "problemMatcher": "$tsc-watch"
+      "problemMatcher": {
+        "base": "$tsc-watch",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^webpack .+ is running",
+          "endsPattern": "^webpack .+ compiled"
+        }
+      }
     },
     {
       "type": "npm",

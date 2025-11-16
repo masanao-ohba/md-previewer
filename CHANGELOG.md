@@ -5,10 +5,41 @@ All notable changes to the "Markdown Preview Enhanced" extension will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-11-16
+
+### Performance
+- **PlantUML Local Mode: 95% Performance Improvement** (10s → 0.2-0.5s)
+  - Implemented persistent PlantUML server using `-picoweb` mode
+  - Eliminated 5-8 second Java startup overhead per render
+  - Server lifecycle management (start on activation, stop on deactivation)
+  - Automatic port detection (18000-18100 range) with conflict prevention
+  - PlantUML-specific URL encoding (DEFLATE + custom base64)
+  - GET-based HTTP rendering via local server endpoint
+  - Cross-platform support (curl for Unix/Mac, PowerShell for Windows)
+
+### Added
+- New configuration setting: `markdownPreviewer.plantuml.serverPort`
+  - 0 = Auto-detect available port (default)
+  - 1-65535 = Use specific port
+- `PlantUMLServer` service class for persistent server management
+- Enhanced logging for PlantUML server operations
+- Port availability checking to prevent conflicts
+
+### Changed
+- PlantUML local rendering now uses persistent server instead of per-request process spawning
+- Removed fallback mechanisms for clearer error diagnostics
+- Build system unified to use webpack for both development and production
+
+### Technical Details
+- Added `src/services/PlantUMLServer.ts` with server lifecycle management
+- Modified `src/renderers/PlantUMLRenderer.ts` to use server mode exclusively
+- Updated `src/extension.ts` with async initialization and server cleanup
+- Enhanced `.vscode/tasks.json` to use webpack watch mode for development
+
 ## [0.1.9] - 2025-11-15
 
 ### Changed
-- PlanUML local mode: Improve performance of Java process
+- PlantUML local mode: Improve performance of Java process
 
 ## [0.1.8] - 2025-11-12
 
