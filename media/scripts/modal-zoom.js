@@ -273,12 +273,12 @@
                 viewport.classList.add('scrollable');
                 viewport.classList.remove('centered');
             }
-            viewport.classList.remove('panning');
-
             // Update UI
             this.currentZoom = 100;
             this.initialZoom = 100;
             this.zoomLevelDisplay.textContent = '100%';
+
+            updateViewportCursor();
 
             console.log('=== INITIAL DISPLAY @ 100% (LAYOUT-ONLY) ===');
             console.log('Natural Size:', {width: naturalWidth, height: naturalHeight});
@@ -478,6 +478,8 @@
             this.currentZoom = newZoom;
             this.zoomLevelDisplay.textContent = newZoom + '%';
 
+            updateViewportCursor();
+
             // AFTER
             setTimeout(() => {
                 const vpRect = viewport.getBoundingClientRect();
@@ -561,6 +563,8 @@
             this.startY = event.pageY - viewport.offsetTop;
             this.scrollLeft = viewport.scrollLeft;
             this.scrollTop = viewport.scrollTop;
+
+            updateViewportCursor();
         },
 
         drag: function(event) {
@@ -576,7 +580,9 @@
         },
 
         endDrag: function() {
+            if (!this.isPanning) return;
             this.isPanning = false;
+            updateViewportCursor();
         },
 
         getPosition: function() {
@@ -592,14 +598,27 @@
         const viewport = modalZoomManager.modalViewport;
         if (!viewport) return;
 
-        viewport.classList.remove('zoom-in-mode', 'zoom-out-mode');
+        viewport.classList.remove('zoom-in-mode', 'zoom-out-mode', 'pan-ready', 'pan-dragging');
 
         if (!modalZoomManager.isOpen()) return;
 
         if (modifierState.ctrlOrMeta) {
             viewport.classList.add('zoom-in-mode');
-        } else if (modifierState.altKey) {
+            return;
+        }
+
+        if (modifierState.altKey) {
             viewport.classList.add('zoom-out-mode');
+            return;
+        }
+
+        if (panController.isPanning) {
+            viewport.classList.add('pan-dragging');
+            return;
+        }
+
+        if (zoomController.currentZoom > 100) {
+            viewport.classList.add('pan-ready');
         }
     }
 

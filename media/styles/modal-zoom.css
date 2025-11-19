@@ -121,20 +121,20 @@ body > div[class*="error"] svg {
     align-items: flex-start;
 }
 
-#modal-diagram-viewport.panning {
+#modal-diagram-viewport.pan-ready {
     cursor: grab;
 }
 
-#modal-diagram-viewport.panning:active {
+#modal-diagram-viewport.pan-dragging {
     cursor: grabbing;
 }
 
 #modal-diagram-viewport.zoom-in-mode {
-    cursor: zoom-in;
+    cursor: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0OCcgaGVpZ2h0PSc0OCcgdmlld0JveD0nMCAwIDQ4IDQ4Jz4KICA8Y2lyY2xlIGN4PScyMCcgY3k9JzIwJyByPScxMicgZmlsbD0nd2hpdGUnIHN0cm9rZT0nIzFmMjMyOCcgc3Ryb2tlLXdpZHRoPSczJy8+CiAgPGxpbmUgeDE9JzE0JyB5MT0nMjAnIHgyPScyNicgeTI9JzIwJyBzdHJva2U9JyMxZjIzMjgnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+CiAgPGxpbmUgeDE9JzIwJyB5MT0nMTQnIHgyPScyMCcgeTI9JzI2JyBzdHJva2U9JyMxZjIzMjgnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+CiAgPGxpbmUgeDE9JzI2JyB5MT0nMjYnIHgyPSc0MCcgeTI9JzQwJyBzdHJva2U9JyMxZjIzMjgnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+Cjwvc3ZnPg==') 10 10, zoom-in;
 }
 
 #modal-diagram-viewport.zoom-out-mode {
-    cursor: zoom-out;
+    cursor: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0OCcgaGVpZ2h0PSc0OCcgdmlld0JveD0nMCAwIDQ4IDQ4Jz4KICA8Y2lyY2xlIGN4PScyMCcgY3k9JzIwJyByPScxMicgZmlsbD0nd2hpdGUnIHN0cm9rZT0nIzFmMjMyOCcgc3Ryb2tlLXdpZHRoPSczJy8+CiAgPGxpbmUgeDE9JzE0JyB5MT0nMjAnIHgyPScyNicgeTI9JzIwJyBzdHJva2U9JyMxZjIzMjgnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+CiAgPGxpbmUgeDE9JzI2JyB5MT0nMjYnIHgyPSc0MCcgeTI9JzQwJyBzdHJva2U9JyMxZjIzMjgnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+Cjwvc3ZnPg==') 10 10, zoom-out;
 }
 
 #modal-diagram-wrapper {
