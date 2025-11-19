@@ -555,9 +555,11 @@
         scrollTop: 0,
 
         startDrag: function(event) {
+            if (event.button !== 0) return;
             if (zoomController.currentZoom <= 100) return;
             if (event.ctrlKey || event.metaKey || event.altKey) return;
             const viewport = modalZoomManager.modalViewport;
+            event.preventDefault();
             this.isPanning = true;
             this.startX = event.pageX - viewport.offsetLeft;
             this.startY = event.pageY - viewport.offsetTop;
