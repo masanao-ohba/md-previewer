@@ -1,38 +1,35 @@
-# Markdown Preview Enhanced
+# MD Previewer - Mermaid & PlantUML
 
-Mermaid & PlantUMLダイアグラムの高度なサポートを備えた、強力なVSCode Markdown プレビュー拡張機能です。
+MermaidとPlantUMLダイアグラムの高度なサポートを備えた、VSCode Markdownプレビュー拡張機能です。
 
-## 主な機能
+[English Version](README.md)
 
-### 📝 Markdownプレビュー
-- **リアルタイム更新**: 編集内容が即座にプレビューに反映
-- **デバウンス処理**: 快適な編集体験のための設定可能な更新遅延（デフォルト300ms）
-- **サイドバイサイド表示**: エディタと並べてプレビューを開く
-- **シンタックスハイライト**: コードブロックの美しい表示
+## ✨ 主な機能
 
-#### サポートしているコード言語
-- JavaScript（`javascript`, `js`）
-- HTML（`html`, `htm`）
-- CSS（`css`）
-- PHP（`php`）
-- Python（`python`, `py`）
-- Ruby（`ruby`, `rb`）
-- Java（`java`）
-- YAML（`yaml`, `yml`）
-- JSON（`json`）
-- JSON Lines（`jsonl`）
-- Diff（`diff`, `patch`）
-- Bash（`bash`, `sh`, `shell`）
-- SCSS（`scss`, `sass`）
-- SQL（`sql`）
+| 機能 | 説明 |
+|------|------|
+| 📝 **Markdownプレビュー** | 10種類以上の言語のシンタックスハイライト付きリアルタイムプレビュー |
+| 📊 **Mermaidダイアグラム** | ネイティブレンダリングとエラー分離表示 |
+| 🌐 **PlantUMLダイアグラム** | オンラインモード(デフォルト) & ローカルモード(95%高速化) |
+| 🔍 **ダイアグラムズーム** | 10%-1000%のズーム、キーボード & マウスショートカット対応 |
+| 📋 **クリップボードコピー** | コードブロックとダイアグラムのワンクリックコピー |
+| 🎨 **テーマ** | VS Code Light/Darkテーマ対応 |
 
-### 📊 ダイアグラムサポート
+## 🚀 クイックスタート
 
-#### Mermaid
-- ネイティブレンダリング
-- エラーの分離表示
-- 複数のダイアグラムタイプをサポート（フローチャート、シーケンス図、クラス図など）
+### インストール
+1. VSCode拡張機能を開く (`Ctrl+Shift+X` / `Cmd+Shift+X`)
+2. **"MD Previewer"** を検索
+3. **インストール** をクリック
 
+### 使い方
+1. Markdownファイルを開く
+2. エディタータイトルバーのプレビューアイコンをクリック、または
+3. コマンドパレット (`Ctrl+Shift+P` / `Cmd+Shift+P`) → **"Markdown Previewer: Open Preview"** を実行
+
+## 📊 ダイアグラムサポート
+
+### Mermaid
 ````markdown
 ```mermaid
 graph TD
@@ -42,11 +39,7 @@ graph TD
 ```
 ````
 
-#### PlantUML
-- オンライン/ローカル両モード対応
-- **オンラインモード**: plantuml.comサーバーを使用（デフォルト、セットアップ不要）
-- **ローカルモード**: Java + PlantUML.jarで高速レンダリング
-
+### PlantUML
 ````markdown
 ```plantuml
 @startuml
@@ -56,223 +49,117 @@ Bob --> Alice: Hi!
 ```
 ````
 
-### 📋 クリップボードコピー機能
-- コードブロックのワンクリックコピー
-- ダイアグラム（Mermaid & PlantUML）のワンクリックコピー
-- コピー成功時の視覚的フィードバック
-- ホバー時にコピーボタンを表示
-- すべてのコード言語とダイアグラムタイプに対応
+**レンダリングモード:**
+- **オンラインモード** (デフォルト): セットアップ不要、plantuml.comを使用
+- **ローカルモード**: 95%高速化 (0.2-0.5秒 vs 10秒)、Java + PlantUML.jarが必要
 
-### 🔍 ダイアグラムズーム機能
-- ダイアグラムをクリックしてモーダル表示
-- ズーム範囲: 10% - 1000%
-- パン/ドラッグ操作でナビゲーション
-- キーボードショートカット:
-  - `Ctrl/Cmd +`: ズームイン
-  - `Ctrl/Cmd -`: ズームアウト
-  - `Ctrl/Cmd 0`: ズームリセット
-  - `ESC`: モーダルを閉じる
-- マウスショートカット:
-  - `Ctrl/Cmd + Click`: クリック位置を中心にズームイン
-  - `Alt + Click`: クリック位置を中心にズームアウト
-  - 修飾キーを押すとカーソルが自動的にズームモードを示す表示に変化
+## ⌨️ キーボード & マウスショートカット
 
-### 🎨 テーマ
-- **VS Code Light / Dark**: VS Codeネイティブテーマ
+### ダイアグラムズームショートカット
 
-## インストール
+| 操作 | キーボード | マウス |
+|------|-----------|--------|
+| ズームイン | `Ctrl/Cmd +` | `Ctrl/Cmd + Click` |
+| ズームアウト | `Ctrl/Cmd -` | `Alt + Click` |
+| ズームリセット | `Ctrl/Cmd 0` | - |
+| モーダルを閉じる | `ESC` | - |
+| パン/ドラッグ | - | ズームされたダイアグラムをドラッグ |
 
-### Visual Studio Marketplaceから
-1. VSCodeを開く
-2. 拡張機能ビュー（`Ctrl+Shift+X` / `Cmd+Shift+X`）を開く
-3. "MD Previewer" を検索
-4. 「インストール」をクリック
+*マウスショートカットはカーソル位置を中心にズーム、視覚的フィードバック付き*
 
-### VSIXファイルから
-```bash
-code --install-extension markdown-preview-enhanced-0.1.0.vsix
-```
+## ⚙️ 設定
 
-## 使い方
+### 基本設定
 
-### プレビューを開く
+| 設定項目 | デフォルト | 説明 |
+|---------|----------|------|
+| `preview.debounceDelay` | `300` | 更新遅延時間(ミリ秒) |
+| `preview.theme` | `vscode-light` | テーマ (`vscode-light`, `vscode-dark`) |
+| `preview.autoOpen` | `false` | Markdownファイルを開いたときに自動プレビュー |
+| `plantuml.mode` | `online` | レンダリングモード (`online`, `local`) |
 
-#### 方法1: コマンドパレット
-1. Markdownファイルを開く
-2. `Ctrl+Shift+P` / `Cmd+Shift+P` でコマンドパレットを開く
-3. "Markdown Previewer: Open Preview" を選択
+### PlantUMLローカルモード設定 (オプション)
 
-#### 方法2: エディタータイトルバー
-Markdownファイルを開いた状態で、エディタータイトルバーの「プレビューを開く」アイコンをクリック
+95%高速化を実現するには:
 
-### ダイアグラムのズーム
-1. プレビュー内のMermaidまたはPlantUMLダイアグラムをクリック
-2. モーダルウィンドウが開きます
-3. 以下の方法で拡大/縮小:
-   - ズームコントロールボタン
-   - キーボードショートカット（`Ctrl/Cmd +/-/0`）
-   - マウスショートカット（`Ctrl/Cmd + Click`、`Alt + Click`）
-4. ドラッグ&ドロップでパン操作
-
-## 設定
-
-VSCodeの設定（`ファイル > 環境設定 > 設定`）から「Markdown Previewer」を検索してカスタマイズできます。
-
-### 主な設定項目
-
-#### デバウンス遅延
-プレビュー更新のデバウンス時間（ミリ秒）
-
-```json
-"markdownPreviewer.preview.debounceDelay": 300
-```
-
-#### デフォルトズームレベル
-プレビューのデフォルトズームレベル（パーセント）
-
-```json
-"markdownPreviewer.preview.defaultZoom": 100
-```
-
-#### テーマ
-プレビューパネルのテーマ
-
-```json
-"markdownPreviewer.preview.theme": "vscode-light"
-```
-
-オプション: `vscode-light`, `vscode-dark`
-
-#### 自動プレビュー
-Markdownファイルを開いたときに自動的にプレビューを開く
-
-```json
-"markdownPreviewer.preview.autoOpen": false
-```
-
-#### PlantUMLモード
-PlantUMLレンダリングモード
-
-```json
-"markdownPreviewer.plantuml.mode": "online"
-```
-
-オプション: `online`, `local`
-
-#### PlantUML JARパス（ローカルモード用）
-PlantUML JARファイルの絶対パス
-
-```json
-"markdownPreviewer.plantuml.jarPath": "/path/to/plantuml.jar"
-```
-
-#### PlantUMLサーバー（オンラインモード用）
-PlantUMLサーバーのURL
-
-```json
-"markdownPreviewer.plantuml.server": "https://www.plantuml.com/plantuml/svg/"
-```
-
-### PlantUMLローカルモードのセットアップ
-
-ローカルモードを使用する場合（オプション）:
-
-1. **Javaのインストール**
-   - Java 8以上が必要
-   - `java -version` で確認
-
-2. **PlantUML JARのダウンロード**
-   - https://plantuml.com/download からダウンロード
-   - 適切な場所に保存（例：`/Users/username/plantuml.jar`）
-
-3. **VSCode設定**
+1. **Java 8+をインストール** → 確認: `java -version`
+2. **PlantUML JARをダウンロード** → https://plantuml.com/download
+3. **VSCodeを設定** → `ファイル > 環境設定 > 設定`:
    ```json
    {
      "markdownPreviewer.plantuml.mode": "local",
-     "markdownPreviewer.plantuml.jarPath": "/Users/username/plantuml.jar"
+     "markdownPreviewer.plantuml.jarPath": "/path/to/plantuml.jar"
    }
    ```
 
-## サポートされているMarkdown機能
+<details>
+<summary>PlantUML詳細設定</summary>
 
-### 基本構文
-- 見出し（h1-h6）
-- 強調（太字、斜体）
-- リスト（順序付き、順序なし）
-- リンク
-- 画像
-- コードブロック（シンタックスハイライト付き）
-- インラインコード
-- 引用
-- テーブル
-- 水平線
+| 設定項目 | デフォルト | 説明 |
+|---------|----------|------|
+| `plantuml.jarPath` | `""` | PlantUML JARファイルの絶対パス (ローカルモードで必須) |
+| `plantuml.server` | `https://www.plantuml.com/plantuml/svg/` | オンラインモード用サーバーURL |
+| `plantuml.serverPort` | `0` | ローカルサーバーポート (0 = 自動検出 18000-18100) |
+
+**ローカルモードの仕組み:**
+- 永続的なPlantUMLサーバーがバックグラウンドで動作 (単一Javaプロセス)
+- HTTPサーバーモード (`-picoweb`) により起動オーバーヘッドを削減
+- 18000-18100の範囲で利用可能なポートを自動検出
+- レンダリング時間: 0.2-0.5秒 vs リクエスト毎の起動では10秒
+</details>
+
+## 🛠️ トラブルシューティング
+
+<details>
+<summary>プレビューが更新されない</summary>
+
+- ファイルが保存されているか確認 (または自動保存を有効化)
+- `debounceDelay`設定を確認 (デフォルト300ms)
+- 問題が続く場合はVSCodeを再起動
+</details>
+
+<details>
+<summary>PlantUMLローカルモードが動作しない</summary>
+
+1. Javaを確認: `java -version` (Java 8+が必要)
+2. 設定でJARパスを確認
+3. ポートが利用可能か確認 (18000-18100の範囲)
+4. ログを確認: `ヘルプ > 開発者ツールの切り替え > コンソール`
+5. カスタムポートを試す: `"markdownPreviewer.plantuml.serverPort": 18080`
+</details>
+
+## 📝 サポート機能
+
+### Markdown構文
+見出し • 太字/斜体 • リスト • リンク • 画像 • コードブロック(10種類以上の言語) • インラインコード • 引用 • テーブル • 水平線
+
+### コードハイライト
+JavaScript • HTML • CSS • PHP • Python • Ruby • Java • YAML • JSON • Diff • Bash • SCSS • SQL
 
 ### ダイアグラム
-- **Mermaid**: フローチャート、シーケンス図、クラス図、状態図など
-- **PlantUML**: シーケンス図、ユースケース図、クラス図、アクティビティ図など
+**Mermaid:** フローチャート、シーケンス図、クラス図、状態図、ER図、ガントチャートなど
+**PlantUML:** シーケンス図、ユースケース図、クラス図、アクティビティ図、コンポーネント図など
 
-## 必要要件
+## 📋 必要要件
 
-- Visual Studio Code 1.85.0 以降
-- PlantUMLローカルモードを使用する場合: Java 8+ および PlantUML.jar
+- **VSCode:** 1.85.0以降
+- **PlantUMLローカルモード:** Java 8+ および PlantUML.jar (オプション)
 
-## 既知の制限事項
+## 📖 リリースノート
 
-- PlantUMLローカルモードはJavaインストールが必要
-- 非常に大きなファイル（10,000行以上）ではパフォーマンスに影響がある場合があります
+詳細は [CHANGELOG.md](CHANGELOG.md) を参照してください。
 
-## トラブルシューティング
+**最新:** v0.3.1 - マウスショートカットによる拡張ズームコントロール
+**前回:** v0.3.0 - PlantUMLローカルモードの95%パフォーマンス向上
 
-### プレビューが更新されない
-- ファイルが保存されているか確認（または自動保存を有効化）
-- `debounceDelay`設定が高すぎないか確認
-- 問題が続く場合はVSCodeを再起動
+## 📄 ライセンス
 
-### PlantUMLローカルモードが動作しない
-- Javaがインストールされているか確認：`java -version`
-- JARファイルパスが正しいか確認
-- JARファイルが有効なPlantUML JARか確認
+MIT License - Copyright (c) 2025 Masanao Ohba
 
-## リリースノート
+## 💬 サポート
 
-### 0.1.0 - 初回リリース
-- Markdownプレビュー機能
-- Mermaidダイアグラムサポート
-- PlantUMLダイアグラムサポート（オンライン/ローカルモード）
-- ダイアグラムズーム & パン機能
-- モーダルダイアグラムビューアー
-- 複数テーマサポート
-- コードブロックとダイアグラムのクリップボードコピー機能
-- E2Eテストスイート
-
-## ライセンス
-
-MIT License
-
-Copyright (c) 2025 Masanao Ohba
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-## サポート
-
-問題を発見した場合やフィーチャーリクエストがある場合は、GitHubリポジトリのIssuesセクションまでお知らせください。
+バグを発見した場合や機能リクエストがある場合は、[Issueを開く](https://github.com/masanao-ohba/md-previewer/issues)
 
 ---
 
-**Enjoy!**
+**Enjoy!** ⭐ このプラグインが役に立ったら [GitHub](https://github.com/masanao-ohba/md-previewer) でスターをお願いします！
