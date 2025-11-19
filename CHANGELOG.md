@@ -5,6 +5,28 @@ All notable changes to the "Markdown Preview Enhanced" extension will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2025-11-19
+
+### Added
+- **Enhanced Zoom Controls for Diagrams**
+  - Mouse-based zoom shortcuts:
+    - `Ctrl/Cmd + Click`: Zoom in centered on cursor position
+    - `Alt + Click`: Zoom out centered on cursor position
+  - Visual cursor feedback when modifier keys are pressed
+  - Automatic cursor mode indication (zoom-in/zoom-out)
+  - Smart anchor-point zooming for precise diagram exploration
+
+### Changed
+- Improved zoom controller to support anchor-based zooming
+- Enhanced pan controller with modifier key detection
+- Updated README_ja.md to focus on user guidelines (removed internal implementation details)
+
+### Technical Details
+- Added modifier state tracking for keyboard/mouse coordination
+- Implemented cursor state management system
+- Enhanced viewport offset calculations for centered content
+- Improved scroll position calculations during zoom operations
+
 ## [0.3.0] - 2025-11-16
 
 ### Performance
