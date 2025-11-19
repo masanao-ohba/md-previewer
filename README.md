@@ -74,6 +74,10 @@ Bob --> Alice: Hi!
   - `Ctrl/Cmd -`: Zoom out
   - `Ctrl/Cmd 0`: Reset zoom
   - `ESC`: Close modal
+- Mouse shortcuts:
+  - `Ctrl/Cmd + Click`: Zoom in centered on the click location
+  - `Alt + Click`: Zoom out centered on the click location
+  - Cursor automatically indicates zoom mode when modifiers are pressed
 
 ### 🎨 Themes
 - **VS Code Light / Dark**: VS Code native themes
@@ -106,7 +110,7 @@ With a Markdown file open, click the "Open Preview" icon in the editor title bar
 ### Zooming Diagrams
 1. Click on a Mermaid or PlantUML diagram in the preview
 2. Modal window opens
-3. Zoom in/out using zoom controls or keyboard shortcuts
+3. Zoom in/out using zoom controls, keyboard shortcuts, or mouse shortcuts (`Ctrl/Cmd + Click`, `Alt + Click`)
 4. Pan using drag & drop
 
 ## Configuration

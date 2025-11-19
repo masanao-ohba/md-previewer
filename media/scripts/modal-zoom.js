@@ -1,5 +1,9 @@
 // Modal Diagram Zoom functionality
 (function initializeModalZoom() {
+    const modifierState = {
+        ctrlOrMeta: false,
+        altKey: false
+    };
     // Modal Zoom Manager
     const modalZoomManager = {
         modal: document.getElementById('diagram-modal'),
@@ -108,6 +112,11 @@
 
             // Hide modal
             this.modal.classList.remove('modal-visible');
+
+            // Reset modifier state/cursor hints
+            modifierState.ctrlOrMeta = false;
+            modifierState.altKey = false;
+            updateViewportCursor();
 
             console.log('=== MODAL CLOSED (STATE RESET) ===');
             console.log('All state reset to initial values');
@@ -264,12 +273,12 @@
                 viewport.classList.add('scrollable');
                 viewport.classList.remove('centered');
             }
-            viewport.classList.remove('panning');
-
             // Update UI
             this.currentZoom = 100;
             this.initialZoom = 100;
             this.zoomLevelDisplay.textContent = '100%';
+
+            updateViewportCursor();
 
             console.log('=== INITIAL DISPLAY @ 100% (LAYOUT-ONLY) ===');
             console.log('Natural Size:', {width: naturalWidth, height: naturalHeight});
@@ -347,7 +356,7 @@
             }, 0);
         },
 
-        changeZoom: function(newPercentage) {
+        changeZoom: function(newPercentage, options = {}) {
             const oldZoom = this.currentZoom;
             const newZoom = Math.max(this.MIN_ZOOM, Math.min(this.MAX_ZOOM, newPercentage));
 
@@ -374,6 +383,12 @@
             const oldScale = this.fitRatio * (oldZoom / 100);
             const newScale = this.fitRatio * (newZoom / 100);
 
+            const offsets = getContainerOffsets(viewport, container);
+            const defaultAnchorX = viewport.clientWidth / 2 + viewport.scrollLeft - offsets.horizontalOffset;
+            const defaultAnchorY = viewport.clientHeight / 2 + viewport.scrollTop - offsets.verticalOffset;
+            const anchorX = typeof options.anchorX === 'number' ? options.anchorX : defaultAnchorX;
+            const anchorY = typeof options.anchorY === 'number' ? options.anchorY : defaultAnchorY;
+
             console.log('=== ZOOM CHANGE: ' + oldZoom + '% → ' + newZoom + '% ===');
 
             // BEFORE
@@ -384,10 +399,6 @@
                 scrollTop: viewport.scrollTop,
                 scrollLeft: viewport.scrollLeft
             });
-
-            // Calculate viewport center point in container coordinates (before zoom)
-            const viewportCenterX = viewport.clientWidth / 2 + viewport.scrollLeft;
-            const viewportCenterY = viewport.clientHeight / 2 + viewport.scrollTop;
 
             // Detect previous container size (before dimension change)
             const oldWidth = parseInt(container.style.width) || 0;
@@ -429,9 +440,9 @@
             // Adjust scroll position independently for horizontal and vertical
             const ratio = newScale / oldScale;
 
-            // Calculate center-fixed zoom scroll positions
-            let newScrollLeft = viewportCenterX * ratio - viewport.clientWidth / 2;
-            let newScrollTop = viewportCenterY * ratio - viewport.clientHeight / 2;
+            // Calculate anchor-fixed zoom scroll positions
+            let newScrollLeft = anchorX * ratio - viewport.clientWidth / 2;
+            let newScrollTop = anchorY * ratio - viewport.clientHeight / 2;
 
             // Apply scroll positions with clamping to valid range
             if (willHaveHorizontalScroll) {
@@ -466,6 +477,8 @@
 
             this.currentZoom = newZoom;
             this.zoomLevelDisplay.textContent = newZoom + '%';
+
+            updateViewportCursor();
 
             // AFTER
             setTimeout(() => {
@@ -542,13 +555,18 @@
         scrollTop: 0,
 
         startDrag: function(event) {
+            if (event.button !== 0) return;
             if (zoomController.currentZoom <= 100) return;
+            if (event.ctrlKey || event.metaKey || event.altKey) return;
             const viewport = modalZoomManager.modalViewport;
+            event.preventDefault();
             this.isPanning = true;
             this.startX = event.pageX - viewport.offsetLeft;
             this.startY = event.pageY - viewport.offsetTop;
             this.scrollLeft = viewport.scrollLeft;
             this.scrollTop = viewport.scrollTop;
+
+            updateViewportCursor();
         },
 
         drag: function(event) {
@@ -564,7 +582,9 @@
         },
 
         endDrag: function() {
+            if (!this.isPanning) return;
             this.isPanning = false;
+            updateViewportCursor();
         },
 
         getPosition: function() {
@@ -575,6 +595,79 @@
             };
         }
     };
+
+    function updateViewportCursor() {
+        const viewport = modalZoomManager.modalViewport;
+        if (!viewport) return;
+
+        viewport.classList.remove('zoom-in-mode', 'zoom-out-mode', 'pan-ready', 'pan-dragging');
+
+        if (!modalZoomManager.isOpen()) return;
+
+        if (modifierState.ctrlOrMeta) {
+            viewport.classList.add('zoom-in-mode');
+            return;
+        }
+
+        if (modifierState.altKey) {
+            viewport.classList.add('zoom-out-mode');
+            return;
+        }
+
+        if (panController.isPanning) {
+            viewport.classList.add('pan-dragging');
+            return;
+        }
+
+        if (zoomController.currentZoom > 100) {
+            viewport.classList.add('pan-ready');
+        }
+    }
+
+    function syncModifierStateFromEvent(event) {
+        const nextCtrlOrMeta = event.ctrlKey || event.metaKey;
+        const nextAlt = event.altKey;
+        if (modifierState.ctrlOrMeta === nextCtrlOrMeta && modifierState.altKey === nextAlt) {
+            return;
+        }
+        modifierState.ctrlOrMeta = nextCtrlOrMeta;
+        modifierState.altKey = nextAlt;
+        updateViewportCursor();
+    }
+
+    function getContainerAnchorFromEvent(event) {
+        const viewport = modalZoomManager.modalViewport;
+        const container = modalZoomManager.modalContainer;
+        if (!container || !viewport) {
+            return { anchorX: 0, anchorY: 0 };
+        }
+
+        const viewportRect = viewport.getBoundingClientRect();
+        const clickX = event.clientX - viewportRect.left;
+        const clickY = event.clientY - viewportRect.top;
+        const offsets = getContainerOffsets(viewport, container);
+
+        const rawAnchorX = clickX + viewport.scrollLeft - offsets.horizontalOffset;
+        const rawAnchorY = clickY + viewport.scrollTop - offsets.verticalOffset;
+        const anchorX = Math.min(container.offsetWidth, Math.max(0, rawAnchorX));
+        const anchorY = Math.min(container.offsetHeight, Math.max(0, rawAnchorY));
+        return { anchorX, anchorY };
+    }
+
+    function getContainerOffsets(viewport, container) {
+        if (!viewport || !container) {
+            return { horizontalOffset: 0, verticalOffset: 0 };
+        }
+
+        if (!viewport.classList.contains('centered')) {
+            return { horizontalOffset: 0, verticalOffset: 0 };
+        }
+
+        return {
+            horizontalOffset: Math.max(0, (viewport.clientWidth - container.offsetWidth) / 2),
+            verticalOffset: Math.max(0, (viewport.clientHeight - container.offsetHeight) / 2)
+        };
+    }
 
     // Expose to window for testing
     window.modalZoomManager = modalZoomManager;
@@ -617,6 +710,8 @@
         // Only handle zoom shortcuts when modal is open
         if (!modalZoomManager.isOpen()) return;
 
+        syncModifierStateFromEvent(e);
+
         // Ctrl/Cmd + Plus
         if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '=')) {
             e.preventDefault();
@@ -634,6 +729,11 @@
         }
     });
 
+    document.addEventListener('keyup', (e) => {
+        if (!modalZoomManager.isOpen()) return;
+        syncModifierStateFromEvent(e);
+    });
+
     // Zoom controls
     document.getElementById('modal-zoom-in').addEventListener('click', () => {
         zoomController.zoomIn();
@@ -649,6 +749,26 @@
 
     // Pan/drag support
     const viewport = modalZoomManager.modalViewport;
+
+    viewport.addEventListener('click', (e) => {
+        if (!modalZoomManager.isOpen()) return;
+        if (e.button !== 0) return;
+
+        if ((e.ctrlKey || e.metaKey) && !e.altKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            const { anchorX, anchorY } = getContainerAnchorFromEvent(e);
+            zoomController.changeZoom(zoomController.currentZoom + zoomController.ZOOM_STEP, { anchorX, anchorY });
+            return;
+        }
+
+        if (e.altKey && !(e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            e.stopPropagation();
+            const { anchorX, anchorY } = getContainerAnchorFromEvent(e);
+            zoomController.changeZoom(zoomController.currentZoom - zoomController.ZOOM_STEP, { anchorX, anchorY });
+        }
+    });
 
     viewport.addEventListener('mousedown', (e) => {
         panController.startDrag(e);

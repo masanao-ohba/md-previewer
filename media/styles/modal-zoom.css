@@ -121,12 +121,30 @@ body > div[class*="error"] svg {
     align-items: flex-start;
 }
 
-#modal-diagram-viewport.panning {
+#modal-diagram-viewport.pan-ready {
     cursor: grab;
 }
 
-#modal-diagram-viewport.panning:active {
+#modal-diagram-viewport.pan-dragging {
     cursor: grabbing;
+}
+
+#modal-diagram-viewport.zoom-in-mode {
+    cursor: zoom-in;
+}
+
+#modal-diagram-viewport.zoom-out-mode {
+    cursor: zoom-out;
+}
+
+#modal-diagram-container .diagram-clickable {
+    cursor: inherit !important;
+}
+
+#modal-diagram-viewport.pan-dragging,
+#modal-diagram-viewport.pan-dragging * {
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 #modal-diagram-wrapper {
