@@ -5,8 +5,6 @@
         mermaid.initialize({
             startOnLoad: false,
             theme: 'default',
-            // 'strict' makes Mermaid sanitize labels and disables click/script
-            // callbacks, so a Markdown file cannot run script in the webview.
             securityLevel: 'strict',
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             suppressErrorRendering: true
@@ -31,11 +29,10 @@
                     // If parse succeeds, render the diagram
                     return mermaid.render(diagramId + '-svg', diagramDefinition);
                 }).then(result => {
-                    // Sanitize before insertion. HTML_INTEGRATION_POINTS keeps the HTML
-                    // node labels Mermaid places inside <foreignObject>.
                     container.innerHTML = DOMPurify.sanitize(result.svg, {
                         USE_PROFILES: { svg: true, svgFilters: true, html: true },
                         ADD_TAGS: ['foreignObject'],
+                        // Without this, node labels inside <foreignObject> are stripped
                         HTML_INTEGRATION_POINTS: { foreignobject: true }
                     });
                     // CRITICAL: Add .diagram-clickable class for modal zoom functionality

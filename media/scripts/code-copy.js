@@ -54,9 +54,7 @@
 
             // Check if this is a diagram button (has data-diagram-source attribute)
             if (button.hasAttribute('data-diagram-source')) {
-                // Diagram: Get source from data attribute.
-                // getAttribute() already returns the entity-decoded value, which is
-                // the original source (the renderers escape it exactly once).
+                // Diagram: Get source from data attribute
                 code = button.getAttribute('data-diagram-source') || '';
             } else {
                 // Code block: Find the code element

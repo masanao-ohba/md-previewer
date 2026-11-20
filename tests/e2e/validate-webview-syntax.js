@@ -109,7 +109,6 @@ function generateWebviewHTML() {
  */
 function extractScripts(html) {
   const scripts = [];
-  // The end tag may carry whitespace or junk before '>' (e.g. "</script >").
   const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script\b[^>]*>/gi;
   let match;
 
