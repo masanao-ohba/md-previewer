@@ -5,7 +5,7 @@
         mermaid.initialize({
             startOnLoad: false,
             theme: 'default',
-            securityLevel: 'loose',
+            securityLevel: 'strict',
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             suppressErrorRendering: true
         });
@@ -29,7 +29,12 @@
                     // If parse succeeds, render the diagram
                     return mermaid.render(diagramId + '-svg', diagramDefinition);
                 }).then(result => {
-                    container.innerHTML = result.svg;
+                    container.innerHTML = DOMPurify.sanitize(result.svg, {
+                        USE_PROFILES: { svg: true, svgFilters: true, html: true },
+                        ADD_TAGS: ['foreignObject'],
+                        // Without this, node labels inside <foreignObject> are stripped
+                        HTML_INTEGRATION_POINTS: { foreignobject: true }
+                    });
                     // CRITICAL: Add .diagram-clickable class for modal zoom functionality
                     // Without this class, the click event handler cannot detect diagram clicks
                     // Server-side MermaidRenderer adds this, but client-side rendering bypasses that wrapper

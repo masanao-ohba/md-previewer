@@ -177,6 +177,8 @@ export class PreviewPanel {
     <!-- Mermaid library -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.0/dist/purify.min.js"></script>
+
     <!-- Theme CSS -->
     <style>
         ${themeContent}

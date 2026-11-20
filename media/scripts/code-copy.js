@@ -56,10 +56,6 @@
             if (button.hasAttribute('data-diagram-source')) {
                 // Diagram: Get source from data attribute
                 code = button.getAttribute('data-diagram-source') || '';
-                // Decode HTML entities
-                const textarea = document.createElement('textarea');
-                textarea.innerHTML = code;
-                code = textarea.value;
             } else {
                 // Code block: Find the code element
                 const wrapper = button.closest('.code-block-wrapper');
