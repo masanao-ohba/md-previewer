@@ -54,12 +54,10 @@
 
             // Check if this is a diagram button (has data-diagram-source attribute)
             if (button.hasAttribute('data-diagram-source')) {
-                // Diagram: Get source from data attribute
+                // Diagram: Get source from data attribute.
+                // getAttribute() already returns the entity-decoded value, which is
+                // the original source (the renderers escape it exactly once).
                 code = button.getAttribute('data-diagram-source') || '';
-                // Decode HTML entities
-                const textarea = document.createElement('textarea');
-                textarea.innerHTML = code;
-                code = textarea.value;
             } else {
                 // Code block: Find the code element
                 const wrapper = button.closest('.code-block-wrapper');
